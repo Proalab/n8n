@@ -10,6 +10,7 @@ volumes:
 
 networks:
   demo:
+    driver: bridge
 
 x-n8n: &service-n8n
   image: n8nio/n8n:latest
@@ -60,6 +61,8 @@ services:
       - ./caddy_config/Caddyfile:/etc/caddy/Caddyfile
       #- ${DATA_FOLDER}/caddy_config:/config
       #- ${DATA_FOLDER}/caddy_config/Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - demo
 
   postgres:
     image: postgres:16-alpine
