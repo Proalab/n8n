@@ -1,5 +1,8 @@
-n8n.proalab.com {
+{$FULL_DOMAIN} {
     reverse_proxy n8n:5678 {
       flush_interval -1
+    }
+    tls {
+        ca https://acme-staging-v02.api.letsencrypt.org/directory
     }
 }

@@ -53,6 +53,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      FULL_DOMAIN: ${SUBDOMAIN}.${DOMAIN_NAME}
+      SSL_EMAIL: ${SSL_EMAIL}
     volumes:
       - caddy_storage:/data
       - ./caddy_config:/config
