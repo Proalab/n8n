@@ -4,7 +4,6 @@ volumes:
   ollama_storage:
   qdrant_storage:
   caddy_storage:
-    external: true
 
 networks:
   demo:
@@ -105,6 +104,13 @@ services:
       - NODE_ENV=production
       - WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
       - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      # SMTP
+      - N8N_SMTP_HOST=${N8N_SMTP_HOST}
+      - N8N_SMTP_PORT=${N8N_SMTP_PORT}
+      - N8N_SMTP_SSL=${N8N_SMTP_SSL}
+      - N8N_SMTP_USER=${N8N_SMTP_USER}
+      - N8N_SMTP_PASSWORD=${N8N_SMTP_PASSWORD}
+      - N8N_SMTP_SENDER=${N8N_SMTP_SENDER}
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./n8n/backup:/backup

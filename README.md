@@ -44,6 +44,13 @@ git clone https://github.com/n8n-io/self-hosted-ai-starter-kit.git
 cd self-hosted-ai-starter-kit
 ```
 
+### Additional Docks
+
+```
+https://github.com/n8n-io/n8n-docker-caddy
+https://docs.n8n.io/hosting/installation/server-setups/hetzner/#clone-configuration-repository
+```
+
 ### Running n8n using Docker Compose
 
 #### For Nvidia GPU users
