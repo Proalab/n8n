@@ -53,9 +53,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./caddy_data:/data
-      - ./caddy_config:/config
-      - ./caddy_config/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - ${DATA_FOLDER}/caddy_config:/config
+      - ${DATA_FOLDER}/caddy_config/Caddyfile:/etc/caddy/Caddyfile
 
   postgres:
     image: postgres:16-alpine
