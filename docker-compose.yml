@@ -55,6 +55,7 @@ services:
     volumes:
       - ./caddy_data:/data
       - ./caddy_config:/config
+      - ./caddy_config/Caddyfile:/etc/caddy/Caddyfile
 
   postgres:
     image: postgres:16-alpine
