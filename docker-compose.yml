@@ -56,8 +56,10 @@ services:
       - "443:443"
     volumes:
       - caddy_data:/data
-      - ${DATA_FOLDER}/caddy_config:/config
-      - ${DATA_FOLDER}/caddy_config/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy_config:/config
+      - ./caddy_config/Caddyfile:/etc/caddy/Caddyfile
+      #- ${DATA_FOLDER}/caddy_config:/config
+      #- ${DATA_FOLDER}/caddy_config/Caddyfile:/etc/caddy/Caddyfile
 
   postgres:
     image: postgres:16-alpine
@@ -105,7 +107,8 @@ services:
       - n8n_storage:/home/node/.n8n
       - ./n8n/backup:/backup
       - ./shared:/data/shared
-      - ${DATA_FOLDER}/local_files:/files
+      #- ${DATA_FOLDER}/local_files:/files
+      - ./local_files:/files
     depends_on:
       postgres:
         condition: service_healthy
