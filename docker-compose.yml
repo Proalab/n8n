@@ -70,6 +70,8 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
+    ports:
+      # -5432:5432 # for local dev
     volumes:
       - postgres_storage:/var/lib/postgresql/data
     healthcheck:
