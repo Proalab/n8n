@@ -9,3 +9,10 @@ RUN apk add --no-cache python3 py3-pip docker curl && \
     curl -L "https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
     chmod +x /usr/local/bin/docker-compose
 # Use default entrypoint (no dockerd)
+
+# Running with user root allow docker access from the host, but creates a significant SECURITY RISK! if you want to do that just don't switch back to USER node
+# Add node user to the docker group
+# RUN addgroup node docker
+
+# Switch back to default user
+USER node
