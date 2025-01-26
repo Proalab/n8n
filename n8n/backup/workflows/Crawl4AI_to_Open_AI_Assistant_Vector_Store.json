@@ -175,7 +175,7 @@
     {
       "parameters": {
         "method": "DELETE",
-        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars').item.json[\"vector-store-id\"] }}/files/{{ $('Array of Vector Store Files').item.json.file.id }}",
+        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars').first().json[\"vector-store-id\"] }}/files/{{ $('Array of Vector Store Files').item.json.file.id }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "openAiApi",
         "sendHeaders": true,
@@ -263,7 +263,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars').item.json[\"vector-store-id\"] }}/files",
+        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars').first().json[\"vector-store-id\"] }}/files",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "openAiApi",
         "sendHeaders": true,
@@ -804,7 +804,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d3ea2119-46b4-4738-9848-9751c28e9419",
+  "versionId": "fed1e457-13a2-43a4-bc30-77833d9e5d76",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "4e7c826312664538024e55d6a488e7e7386ddec44314941ca910794e369b90aa"
