@@ -12,8 +12,13 @@ from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from datetime import datetime
 
 def ensure_output_folder(folder_name: str):
-    if not os.path.exists(folder_name):
-        os.makedirs(folder_name)
+    """Ensure the output folder exists, relative to the script's location."""
+    current_dir = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
+    output_path = os.path.join(current_dir, folder_name)  # Create full path
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+        print(f"Created folder: {output_path}")
+    return output_path
 
 async def fetch_sitemap_urls(sitemap_url: str) -> List[str]:
     """Fetch and parse URLs from a sitemap XML."""
@@ -36,9 +41,8 @@ async def fetch_sitemap_urls(sitemap_url: str) -> List[str]:
 async def crawl_parallel(urls: List[str], max_concurrent: int = 3):
     print("\n=== Parallel Crawling with Crawl4AI Native Filtering ===")
 
-    output_folder = "markdown_output"
-    # Ensure output folder exists
-    ensure_output_folder(output_folder)
+    # Dynamically set the output folder based on the script's location
+    output_folder = ensure_output_folder("markdown_output")
 
     peak_memory = 0
     process = psutil.Process(os.getpid())
@@ -87,7 +91,9 @@ async def crawl_parallel(urls: List[str], max_concurrent: int = 3):
                     success_count += 1
 
                     # Save raw markdown
-                    raw_filename = os.path.join(output_folder, f"{re.sub(r'^https?://', '', url).replace('/', '_')}.md")
+                    raw_filename = os.path.join(
+                        output_folder, f"{re.sub(r'^https?://', '', url).replace('/', '_')}.md"
+                    )
                     with open(raw_filename, "w", encoding="utf-8") as raw_file:
                         raw_file.write(result.markdown_v2.raw_markdown)
                 else:
