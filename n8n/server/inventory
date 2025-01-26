@@ -1,0 +1,2 @@
+[servers]
+hetzner-n8n ansible_host=65.108.82.244 ansible_user=root

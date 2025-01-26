@@ -1,0 +1,92 @@
+{
+  "name": "Local Ollama - SERVER CPU!",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -300,
+        20
+      ],
+      "id": "f8c64b8b-046d-46a6-b4dc-ec78b421487a",
+      "name": "When chat message received",
+      "webhookId": "dfa4f0f7-062d-4695-8f86-f343e901d2af"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7948b702-6c6b-42cd-b170-7803760d7937",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        180
+      ],
+      "id": "aa7863d9-b40a-4e39-ae62-d2325c9ef773",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "2x94GJ5lyWswTteZ",
+          "name": "Ollama Local - SERVER CPU!"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5373018f-7bd8-4716-a94d-228a866cbe73",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "jIneq6fdgkMsuPAf",
+  "tags": [
+    {
+      "name": "ai",
+      "id": "VfpwjMdGODJ1skxz",
+      "createdAt": "2025-01-26T09:21:04.473Z",
+      "updatedAt": "2025-01-26T09:21:04.473Z"
+    }
+  ]
+}

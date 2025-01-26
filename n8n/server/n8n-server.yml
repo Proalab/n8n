@@ -1,0 +1,266 @@
+---
+- name: "Initial configuration of Debian 12 for Docker-based deployments of n8n"
+  hosts: servers
+  become: true
+  gather_facts: true
+
+  # --------------------------------------------------------------------------
+  # Variables
+  # --------------------------------------------------------------------------
+  vars:
+      hostname: "hetzner-n8n-host"
+      deploy_username: "deploy"
+      deploy_user_home: "/serv"
+      deploy_user_password: "metamorphosis123"
+      local_public_key: "~/.ssh/id_rsa.pub"
+      ssh_port: 22
+      enable_ufw: true
+      ufw_allowed_ports:
+          - "{{ ssh_port }}"
+          - 80
+          - 443
+      n8n_repo: "https://github.com/Proalab/n8n.git"
+      n8n_directory: "/home/n8n"
+
+      # N8N config
+      postgres_user: "root"
+      postgres_password: "xJDvFam3YTB26Ub"
+      postgres_db: "n8n"
+      n8n_encryption_key: "1a996a1f8735349304dc5fb735791d48c33a8cb830f95030d737d386c88a1d37"
+      n8n_jwt_secret: "cb5c7d1695d8aac131506498debf19336c143c2e491e94810e666e21eb8304aa8512001cc028fa3f4f5fd7d8c2487c3a3f47a840da50334f12627d196f133b24"
+      domain_name: "proalab.com"
+      subdomain: "n8n"
+      timezone: "UTC"
+      ssl_email: "info@proalab.com"
+      # N8N SMTP config
+      smtp_host: "smtp.resend.com"
+      smtp_port: "465"
+      smtp_ssl: true
+      smtp_user: "resend"
+      smtp_password: "re_Wza3ePpb_7oFBkd5NenvkX22YG2VXSrGV"
+      smtp_sender: ""   
+
+  pre_tasks:
+      - name: "Update apt cache"
+        apt:
+            update_cache: yes
+
+  tasks:
+      # --------------------------------------------------------------------------
+      # 0. Set Server Hostname
+      # --------------------------------------------------------------------------
+      - name: "Set the server hostname"
+        hostname:
+            name: "{{ hostname }}"
+
+      # --------------------------------------------------------------------------
+      # 1. System Package Updates & Upgrades
+      # --------------------------------------------------------------------------
+      - name: "Upgrade all packages"
+        apt:
+            upgrade: dist
+            autoremove: yes
+            autoclean: yes
+
+      # --------------------------------------------------------------------------
+      # 2. Install Common Utilities
+      # --------------------------------------------------------------------------
+      - name: "Install basic utilities"
+        apt:
+            name:
+                - git
+                - curl
+                - mc
+                - apt-transport-https
+                - ca-certificates
+                - gnupg
+                - sudo
+                - nano
+                - software-properties-common
+            state: present
+
+      # --------------------------------------------------------------------------
+      # 3. User Management: Create a 'deploy' user with auto-generated SSH key
+      # --------------------------------------------------------------------------
+      - name: "Create deploy user with auto-generated SSH key"
+        user:
+            name: "{{ deploy_username }}"
+            shell: /bin/bash
+            home: "{{ deploy_user_home }}"
+            create_home: yes
+            groups: "sudo"
+            append: yes
+            generate_ssh_key: yes
+            ssh_key_type: rsa
+            ssh_key_bits: 4096
+            password: "{{ deploy_user_password | password_hash('sha512') }}"
+            update_password: on_create
+        register: deploy_user
+
+      - name: "Show generated SSH public key (for reference)"
+        debug:
+            msg: "Public key for '{{ deploy_username }}': {{ deploy_user.ssh_public_key }}"
+
+      # --------------------------------------------------------------------------
+      # 3a. Copy your local public key to deploy user's authorized_keys
+      # --------------------------------------------------------------------------
+      - name: "Copy local public key to deploy user authorized_keys"
+        authorized_key:
+            user: "{{ deploy_username }}"
+            key: "{{ lookup('file', local_public_key) }}"
+            state: present
+
+      # --------------------------------------------------------------------------
+      # 4. SSH Daemon Hardening
+      # --------------------------------------------------------------------------
+      - name: "SSH Daemon settings"
+        lineinfile:
+            path: /etc/ssh/sshd_config
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+            state: present
+            create: yes
+        loop:
+            - { regexp: "^PasswordAuthentication", line: "PasswordAuthentication no" }
+            - { regexp: "^PermitRootLogin", line: "PermitRootLogin no" }
+            - { regexp: "^#?Port ", line: "Port {{ ssh_port }}" }
+        notify: "Restart SSH"
+
+      # --------------------------------------------------------------------------
+      # 5. Firewall Configuration (UFW)
+      # --------------------------------------------------------------------------
+      - name: "Install ufw"
+        apt:
+            name: ufw
+            state: present
+        when: enable_ufw
+
+      - name: "Allow necessary ports"
+        ufw:
+            rule: allow
+            port: "{{ item }}"
+            proto: tcp
+        loop: "{{ ufw_allowed_ports }}"
+        when: enable_ufw
+
+      - name: "Enable UFW firewall"
+        ufw:
+            state: enabled
+        when: enable_ufw
+
+      # --------------------------------------------------------------------------
+      # 6. Install Docker & Docker Compose
+      # --------------------------------------------------------------------------
+      - name: "Add Docker GPG key"
+        apt_key:
+            url: https://download.docker.com/linux/debian/gpg
+            state: present
+
+      - name: "Add Docker repository"
+        apt_repository:
+            repo: "deb [arch={{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+            state: present
+            update_cache: yes
+
+      - name: "Install Docker and Docker Compose"
+        apt:
+            name:
+                - docker-ce
+                - docker-ce-cli
+                - containerd.io
+                - docker-buildx-plugin
+                - docker-compose-plugin
+            state: present
+
+      - name: "Add deploy user to the Docker group"
+        user:
+            name: "{{ deploy_username }}"
+            append: yes
+            groups: docker
+
+      # --------------------------------------------------------------------------
+      # 7. Install and Configure Cockpit
+      # --------------------------------------------------------------------------
+      - name: "Install Cockpit"
+        apt:
+            name:
+                - cockpit
+                - cockpit-packagekit
+                - cockpit-machines
+            state: present
+
+      - name: "Enable and start Cockpit service"
+        systemd:
+            name: cockpit
+            state: started
+            enabled: true
+
+      - name: "Allow Cockpit port (9090) in UFW"
+        ufw:
+            rule: allow
+            port: 9090
+            proto: tcp
+        when: enable_ufw
+
+      # --------------------------------------------------------------------------
+      # 8. Clone n8n Repository and Setup
+      # --------------------------------------------------------------------------
+      - name: "Clone the n8n repository"
+        git:
+            repo: "{{ n8n_repo }}"
+            dest: "{{ n8n_directory }}"
+            force: yes
+
+      # --------------------------------------------------------------------------
+      # 8.c. Update the .env File with Custom Parameters
+      # --------------------------------------------------------------------------
+      - name: "Create or modify .env file with necessary parameters"
+        copy:
+          dest: "{{ n8n_directory }}/.env"
+          content: |
+            POSTGRES_USER={{ postgres_user }}
+            POSTGRES_PASSWORD={{ postgres_password }}
+            POSTGRES_DB={{ postgres_db }}
+            N8N_ENCRYPTION_KEY={{ n8n_encryption_key }}
+            N8N_USER_MANAGEMENT_JWT_SECRET={{ n8n_jwt_secret }}
+            DOMAIN_NAME={{ domain_name }}
+            SUBDOMAIN={{ subdomain }}
+            GENERIC_TIMEZONE={{ timezone }}
+            SSL_EMAIL={{ ssl_email }}
+            N8N_SMTP_HOST={{ smtp_host }}
+            N8N_SMTP_PORT={{ smtp_port }}
+            N8N_SMTP_SSL={{ smtp_ssl }}
+            N8N_SMTP_USER={{ smtp_user }}
+            N8N_SMTP_PASSWORD={{ smtp_password }}
+            N8N_SMTP_SENDER={{ smtp_sender }}
+
+      # --------------------------------------------------------------------------
+      # 8.b. Create Docker Volume for Caddy Data
+      # --------------------------------------------------------------------------
+      - name: "Create Docker volume for Caddy data"
+        docker_volume:
+            name: "caddy_storage"
+            state: "present"
+
+      # --------------------------------------------------------------------------
+      # 8.c. Create Docker Volume for n8n Data
+      # --------------------------------------------------------------------------
+      - name: "Create Docker volume for n8n data"
+        docker_volume:
+            name: "n8n_storage"
+            state: "present"
+
+      # --------------------------------------------------------------------------
+      # 9. Start n8n using Docker Compose
+      # --------------------------------------------------------------------------
+      - name: "Start n8n using Docker Compose from the cloned repository. Check your server!"
+        command: docker compose --profile cpu up -d # it's based on your server. check this repo https://github.com/n8n-io/self-hosted-ai-starter-kit
+        args:
+            chdir: "{{ n8n_directory }}"
+        become: true
+
+  handlers:
+      - name: "Restart SSH"
+        service:
+            name: ssh
+            state: restarted

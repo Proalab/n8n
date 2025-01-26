@@ -1,0 +1,61 @@
+{
+  "name": "TEST - Python on Host",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1715cf6a-ece6-4e0b-94c3-3ce747d71bff",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "command": "python -c \"print('Hello, World!')\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "d68372df-ffa2-4b17-a1ce-c8ab18405dfe",
+      "name": "Execute Command"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "01ca95c0-bb6b-4499-aacd-04f00c7669f9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "SU8LA9SiQDjjTDtt",
+  "tags": [
+    {
+      "name": "test",
+      "id": "634HTwtZRZRAYRFr",
+      "createdAt": "2025-01-26T09:20:55.020Z",
+      "updatedAt": "2025-01-26T09:20:55.020Z"
+    }
+  ]
+}

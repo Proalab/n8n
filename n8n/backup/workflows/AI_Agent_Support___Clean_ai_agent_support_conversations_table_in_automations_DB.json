@@ -1,0 +1,77 @@
+{
+  "name": "AI Agent Support - Clean ai_agent_support_conversations table in automations DB",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "80c44570-4f67-4124-8532-3654f2ab4a60",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM ai_agent_support_conversations\nWHERE createdAt < '{{ $now.minus({ hours: 48 }).toFormat(\"yyyy-MM-dd HH:mm:ss\") }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        220,
+        0
+      ],
+      "id": "2bdca16a-645c-4d76-8216-8d466a9beee6",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "2zMAirXyglayHhyb",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5976dc47-b9f4-403c-b6cf-1997fd36741d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "epBhq86p8ApzNKCL",
+  "tags": [
+    {
+      "name": "db",
+      "id": "mwry92lv8ODwjRD6",
+      "createdAt": "2025-01-26T09:21:28.078Z",
+      "updatedAt": "2025-01-26T09:21:28.078Z"
+    }
+  ]
+}

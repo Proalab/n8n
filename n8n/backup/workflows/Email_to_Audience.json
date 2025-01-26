@@ -1,0 +1,148 @@
+{
+  "name": "Email to Audience",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "58d31713-cfaa-45ee-8366-b491e11e63bf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -500,
+        100
+      ],
+      "id": "1998173e-89d3-4a36-b501-e9bd42038ccd",
+      "name": "Webhook",
+      "webhookId": "58d31713-cfaa-45ee-8366-b491e11e63bf"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0bd2c287-0550-4af7-aef4-751ebc51b060",
+              "leftValue": "={{ $json.body.client.source }}",
+              "rightValue": "email",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "4347ebf0-451f-4086-9c18-7011c888e069",
+              "leftValue": "={{ $json.body.client.marketingConsent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        100
+      ],
+      "id": "c38e80d0-ff9f-4b0f-a689-0ba06a06a10f",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://us14.api.mailchimp.com/3.0/lists/7dcbc15bed/members/{{ $json.body.client.info.email }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mailchimpApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"email_address\": \"{{ $json.body.client.info.email }}\",\"status\":\"subscribed\",\"merge_fields\":{\"FNAME\": \"{{ $json.body.client.info.name }}\"},\"tags\": [\"{{ $json.body.client.country }}\"]}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        40,
+        100
+      ],
+      "id": "2e309c9d-16b8-4876-92e8-589ac70ece00",
+      "name": "HTTP Request",
+      "credentials": {
+        "mailchimpApi": {
+          "id": "zUVHtiNtnYbVkAhc",
+          "name": "Mailchimp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## MailChimp Put Request ",
+        "height": 280,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "67f7d891-be1d-4faf-a5fb-8d2ab8ac7eba",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5ae2da11-82c3-402c-bf01-4be57b10ed7c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "iqTlteeeSRTaSkVu",
+  "tags": [
+    {
+      "name": "webhook",
+      "id": "wAuHUcbaDtrFr5wp",
+      "createdAt": "2025-01-26T09:21:42.206Z",
+      "updatedAt": "2025-01-26T09:21:42.206Z"
+    }
+  ]
+}
