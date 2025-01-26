@@ -11,6 +11,9 @@ networks:
 
 x-n8n: &service-n8n
   image: n8nio/n8n:latest
+  build:
+    context: .
+    dockerfile: Dockerfile.n8n # Use custom Dockerfile
   networks: ['demo']
   environment:
     - DB_TYPE=postgresdb
@@ -71,7 +74,7 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_DB
     ports:
-      # -5432:5432 # for local dev
+      - 5432:5432 # for local dev
     volumes:
       - postgres_storage:/var/lib/postgresql/data
     healthcheck:
@@ -118,6 +121,7 @@ services:
       - ./n8n/backup:/backup
       - ./shared:/data/shared
       - ./local_files:/files
+      - /var/run/docker.sock:/var/run/docker.sock # Mount Docker from HOST (if you want to run Docker)
     depends_on:
       postgres:
         condition: service_healthy

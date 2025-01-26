@@ -1,0 +1,11 @@
+FROM n8nio/n8n:latest
+
+# Switch to root user to install dependencies
+USER root
+
+# Install Python 3, pip3, Docker CLI, and curl
+RUN apk add --no-cache python3 py3-pip docker curl && \
+    ln -sf python3 /usr/bin/python && \
+    curl -L "https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
+# Use default entrypoint (no dockerd)
