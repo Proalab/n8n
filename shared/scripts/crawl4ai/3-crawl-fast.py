@@ -87,7 +87,7 @@ async def crawl_parallel(urls: List[str], max_concurrent: int = 3):
                     success_count += 1
 
                     # Save raw markdown
-                    raw_filename = os.path.join(output_folder, f"{datetime.now().strftime('%Y%m%d_%H%M')}_{re.sub(r'^https?://', '', url).replace('/', '_')}.md")
+                    raw_filename = os.path.join(output_folder, f"{re.sub(r'^https?://', '', url).replace('/', '_')}.md")
                     with open(raw_filename, "w", encoding="utf-8") as raw_file:
                         raw_file.write(result.markdown_v2.raw_markdown)
                 else:
