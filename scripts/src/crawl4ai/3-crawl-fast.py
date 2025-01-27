@@ -47,9 +47,13 @@ async def fetch_sitemap_urls(sitemap_url: str) -> List[str]:
                     urls.append(url.text.strip())
 
             return urls
+        
+
+# Global dictionary to store hashes of saved images
+saved_images_hashes = {}
 
 async def download_image(session, img_url, output_folder, page_url):
-    """Download and save an image with a proper filename including query parameters and page context."""
+    """Download and save an image only if its hash does not already exist."""
     try:
         # Parse the URL to extract the base filename and query parameters
         parsed_url = urlparse(img_url)
@@ -64,23 +68,37 @@ async def download_image(session, img_url, output_folder, page_url):
             else:
                 extension = ".jpg"  # Default fallback
 
-        # Create a unique hash of the query parameters
-        query_hash = hashlib.md5(parsed_url.query.encode()).hexdigest() if parsed_url.query else "noquery"
-
-        # Build filename using page context, base name, and query hash
+        # Build a unique filename using page context
         page_context = urlparse(page_url).path.replace("/", "_").strip("_")
+        query_hash = hashlib.md5(parsed_url.query.encode()).hexdigest() if parsed_url.query else "noquery"
         filename = f"{page_context}_{base_name}_{query_hash}{extension}"
         filename = os.path.join(output_folder, filename)
 
+        # Download the image
         async with session.get(img_url) as response:
             if response.status == 200:
+                content = await response.read()
+
+                # Calculate the hash of the image content
+                content_hash = hashlib.md5(content).hexdigest()
+
+                # Check if the image hash already exists
+                if content_hash in saved_images_hashes:
+                    print(f"Duplicate image found: {img_url} -> Skipping download")
+                    return saved_images_hashes[content_hash]  # Return existing filename
+
+                # Save the image and add the hash to the dictionary
                 async with aiofiles.open(filename, "wb") as f:
-                    await f.write(await response.read())
+                    await f.write(content)
+                saved_images_hashes[content_hash] = filename  # Map hash to filename
                 print(f"Image saved: {filename}")
+                return filename
             else:
                 print(f"Failed to download image {img_url}: HTTP {response.status}")
+                return None
     except Exception as e:
         print(f"Error downloading image {img_url}: {e}")
+        return None
 
 async def crawl_parallel(urls: List[str], max_concurrent: int = 3):
     print("\n=== Parallel Crawling with Image Saving ===")
