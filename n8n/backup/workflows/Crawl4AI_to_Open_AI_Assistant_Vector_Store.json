@@ -3,47 +3,29 @@
   "nodes": [
     {
       "parameters": {
-        "fileSelector": "={{ '/data/scripts/crawl4ai/markdown_output/' + $json.file }}",
+        "fileSelector": "={{ '/data/scripts_output/crawl4ai/' + $json.file }}",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1880,
-        -160
+        940,
+        740
       ],
-      "id": "df1a65a8-d4be-4597-b7ce-392afa14b0d9",
+      "id": "2b86e90e-5953-4f56-bd5b-f2a3a431f076",
       "name": "Read/Write Files from Disk"
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "http://python-scripts:5500/crawl4ai",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "{\n  \"args\": []\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -600,
-        -160
-      ],
-      "id": "01b79101-f68d-48e5-97b4-59f131ac6c33",
-      "name": "Execute Crawl4AI Script"
-    },
-    {
-      "parameters": {
-        "command": "ls /data/scripts/crawl4ai/markdown_output"
+        "command": "ls /data/scripts_output/crawl4ai"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -400,
-        -160
+        -1340,
+        740
       ],
-      "id": "f03d15c1-5dff-4f43-a0d3-f20494e3e498",
+      "id": "683a3411-177e-4265-b587-315318c096f7",
       "name": "Check File Names"
     },
     {
@@ -53,15 +35,15 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1700,
-        -160
+        760,
+        740
       ],
-      "id": "ccd97f01-06de-4eed-b6ca-c4f19f1fb5ed",
+      "id": "5a7e4b95-4e6b-4c73-b275-edc0eb75043e",
       "name": "Build an Array of files"
     },
     {
       "parameters": {
-        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars').item.json[\"vector-store-id\"] }}/files",
+        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars').first().json[\"vector-store-id\"] }}/files",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "openAiApi",
         "sendQuery": true,
@@ -87,16 +69,16 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -220,
-        -160
+        -1160,
+        740
       ],
-      "id": "55d7c425-ca47-4e0b-8ef7-736d8ea882ee",
+      "id": "7789fbef-bd0a-403b-834d-46c196a79a49",
       "name": "Get Vector Store Files",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
       "credentials": {
         "openAiApi": {
-          "id": "0CUrLVddfEUaMM7z",
+          "id": "yLJyJqOUtRWRIiby",
           "name": "OpenAi account"
         }
       }
@@ -108,10 +90,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        740,
-        -760
+        -200,
+        140
       ],
-      "id": "4e4c5aee-305e-4974-a73c-1362d5ad1340",
+      "id": "dffe1201-ec8a-4b55-8162-28386037d5a1",
       "name": "Array of Vector Store Files",
       "alwaysOutputData": true,
       "onError": "continueRegularOutput"
@@ -126,14 +108,16 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        2280,
-        -160
+        1340,
+        740
       ],
-      "id": "f14064e0-2abb-4923-96db-30ab5d20d39e",
+      "id": "f1f5abde-9c34-4eda-b0d3-c4d030305732",
       "name": "OpenAI - Upload Files",
+      "retryOnFail": true,
+      "maxTries": 5,
       "credentials": {
         "openAiApi": {
-          "id": "0CUrLVddfEUaMM7z",
+          "id": "yLJyJqOUtRWRIiby",
           "name": "OpenAi account"
         }
       }
@@ -166,10 +150,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -80,
-        -160
+        -1020,
+        740
       ],
-      "id": "f1ba78b7-dd2c-4f5e-85c5-b970982a750b",
+      "id": "523a243f-2c79-46c9-88d1-9739c9282696",
       "name": "If"
     },
     {
@@ -192,16 +176,16 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1540,
-        -780
+        600,
+        120
       ],
-      "id": "f93252ff-94f2-45d6-84b4-3f5c7f079634",
+      "id": "3fd3f443-5440-4951-bdd4-1e6c4c99bfbe",
       "name": "Delete Vector Store Files",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
       "credentials": {
         "openAiApi": {
-          "id": "0CUrLVddfEUaMM7z",
+          "id": "yLJyJqOUtRWRIiby",
           "name": "OpenAi account"
         }
       }
@@ -213,25 +197,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1380,
-        -900
+        440,
+        0
       ],
-      "id": "794ab8ee-52d7-4092-b70f-cd37fc38985f",
+      "id": "a4c4f619-208b-4c34-9cc4-8f743aa5ca80",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "amount": 2
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        1680,
-        -780
-      ],
-      "id": "73ce6ff2-d077-45e5-a261-aad271bd6f13",
-      "name": "Wait",
-      "webhookId": "2c9c95f8-32e6-4b41-ad80-e0528f97602f"
     },
     {
       "parameters": {
@@ -240,25 +210,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2680,
-        -160
+        1740,
+        740
       ],
-      "id": "bb717d71-13b2-4454-9daf-6401ef616495",
+      "id": "0cdcdcdf-717f-4d4f-84d6-1b846971bca4",
       "name": "Loop Over Items2"
-    },
-    {
-      "parameters": {
-        "amount": 0.5
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        3060,
-        -40
-      ],
-      "id": "f72a9b50-95e1-4572-8ce3-402b91929334",
-      "name": "Wait2",
-      "webhookId": "0ec75dc2-ce7e-405b-8dcc-b1d5c4aa7630"
     },
     {
       "parameters": {
@@ -283,16 +239,16 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2900,
-        -40
+        1960,
+        860
       ],
-      "id": "92e29ca8-6104-47dc-9e12-901bc3d46c4a",
+      "id": "6b86dd29-a52c-43b8-8f66-435ed55bea57",
       "name": "Send file to Vector Store",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
       "credentials": {
         "openAiApi": {
-          "id": "0CUrLVddfEUaMM7z",
+          "id": "yLJyJqOUtRWRIiby",
           "name": "OpenAi account"
         }
       }
@@ -304,10 +260,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        480,
-        -420
+        -460,
+        480
       ],
-      "id": "85604614-d88e-4d58-801d-781f1347dc3e",
+      "id": "69c47d69-a996-4275-9de7-be20adee4ba1",
       "name": "Loop Over Items3"
     },
     {
@@ -321,33 +277,19 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        720,
-        -360
+        -220,
+        540
       ],
-      "id": "1816557f-728b-4433-8539-0c21d8a13655",
+      "id": "b6f08426-1874-49c4-896d-842c24b9db52",
       "name": "Delete files1",
       "retryOnFail": true,
       "waitBetweenTries": 5000,
       "credentials": {
         "openAiApi": {
-          "id": "0CUrLVddfEUaMM7z",
+          "id": "yLJyJqOUtRWRIiby",
           "name": "OpenAi account"
         }
       }
-    },
-    {
-      "parameters": {
-        "amount": 0.5
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        860,
-        -360
-      ],
-      "id": "33824404-4cf8-4bfd-8993-8f6f609153ad",
-      "name": "Wait3",
-      "webhookId": "e3561cbb-3ddc-4966-989d-c26c3eb49580"
     },
     {
       "parameters": {
@@ -360,15 +302,17 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        60,
-        -580
+        -880,
+        320
       ],
-      "id": "f6f50bc0-ab6a-4e7c-b046-25a551d85751",
+      "id": "18b682c4-41cc-4d3a-babb-81585368e0f6",
       "name": "OpenAI",
       "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
       "credentials": {
         "openAiApi": {
-          "id": "0CUrLVddfEUaMM7z",
+          "id": "yLJyJqOUtRWRIiby",
           "name": "OpenAi account"
         }
       }
@@ -401,10 +345,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        260,
-        -580
+        -680,
+        320
       ],
-      "id": "6fc600ae-22b5-4070-a893-22f5a94b131e",
+      "id": "17b89e32-0b05-44bc-b88b-ba16c1ff780a",
       "name": "If1"
     },
     {
@@ -435,10 +379,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        940,
-        -760
+        0,
+        140
       ],
-      "id": "756bf9c4-b5ba-458c-b0a1-afb1b9b7427d",
+      "id": "fc623b22-dbd6-4b04-9e96-4d27947be11a",
       "name": "If2"
     },
     {
@@ -455,23 +399,11 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -960,
-        -160
+        -2780,
+        740
       ],
-      "id": "3d7e17a5-cb07-4a75-9890-87919d0ef72e",
+      "id": "c43e9452-25f3-425d-8fa2-a7cffb75f343",
       "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        2080,
-        -160
-      ],
-      "id": "e7dbe381-4d90-4537-bb65-f8f2ffb14a8d",
-      "name": "Wait1",
-      "webhookId": "eb05a825-cc1a-40e3-bfa8-d8c3abc15716"
     },
     {
       "parameters": {
@@ -490,42 +422,204 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -780,
-        -160
+        -2580,
+        740
       ],
-      "id": "de7f5230-ae52-4f2d-b5d1-48c4ad8677e7",
+      "id": "4feca193-a260-43cd-853d-b128b7e5b147",
       "name": "Set Static Vars"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -1500,
+        740
+      ],
+      "id": "391b36ed-a257-4a14-9c01-d8916e172e1d",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python-scripts:5500/crawl4ai",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"args\": [\n    \"--website\",\n    \"https://help.mywayroute.com/sitemap-pages.xml\"\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2320,
+        580
+      ],
+      "id": "a6add510-069f-46bb-98a6-aa16ae18a565",
+      "name": "Execute Crawl4AI Script - help.mywayroute.com"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python-scripts:5500/crawl4ai",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"args\": [\n    \"--website\",\n    \"https://mywayroute.com/sitemap.xml\"\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2320,
+        900
+      ],
+      "id": "233be2ed-42ea-4879-ab03-34df54424bca",
+      "name": "Execute Crawl4AI Script - mywayroute.com"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1140,
+        740
+      ],
+      "id": "5685c9d4-78d2-4999-a098-7b4a6b4c1946",
+      "name": "Wait Temp",
+      "webhookId": "eb05a825-cc1a-40e3-bfa8-d8c3abc15716"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        120
+      ],
+      "id": "0d5d32b6-ec06-4c73-91cd-3852c5e5d523",
+      "name": "Wait2",
+      "webhookId": "2c9c95f8-32e6-4b41-ad80-e0528f97602f"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        540
+      ],
+      "id": "34d42f2c-ed22-4da2-b42b-ac6ac7b83a2e",
+      "name": "Wait1",
+      "webhookId": "e3561cbb-3ddc-4966-989d-c26c3eb49580"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2120,
+        860
+      ],
+      "id": "4f942117-d1a1-4dfa-af99-e3e1db1d75eb",
+      "name": "Wait3",
+      "webhookId": "0ec75dc2-ce7e-405b-8dcc-b1d5c4aa7630"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "624058c6-a72f-4b2d-bb19-4929042f208d",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2100,
+        580
+      ],
+      "id": "5c82819b-9253-4111-bd97-e59112c841f1",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1e91dd68-958d-4070-8cdb-ae43d519a9b0",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2100,
+        900
+      ],
+      "id": "502354d7-3df5-49cd-a4cc-2ec025cd06b2",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "errorMessage": "=Errors:\n{{ $('Execute Crawl4AI Script - help.mywayroute.com').item.json.error }}\n{{ $('Execute Crawl4AI Script - mywayroute.com').item.json.error }}"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -1880,
+        720
+      ],
+      "id": "fe71f930-5984-4ea1-a1f8-b36032fd2cd2",
+      "name": "Stop and Error"
     }
   ],
-  "pinData": {
-    "Execute Crawl4AI Script": [
-      {
-        "json": {
-          "error": "",
-          "output": "Fetching URLs from sitemap...\nFound 39 URLs in the sitemap.\n\n=== Parallel Crawling with Crawl4AI Native Filtering ===\n[INIT].... → Crawl4AI 0.4.247\nBefore batch 1:  Current Memory: 86 MB, Peak: 86 MB\n[FETCH]... ↓ https://help.mywayroute.com/... | Status: True | Time: 0.01s\n[COMPLETE] ● https://help.mywayroute.com/... | Status: True | Total: 0.01s\n[FETCH]... ↓ https://help.mywayroute.com/what-is-myway-route-pl... | Status: True | Time: 1.01s\n[COMPLETE] ● https://help.mywayroute.com/what-is-myway-route-pl... | Status: True | Total: 1.01s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-10' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-10' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-11' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-11' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[FETCH]... ↓ https://help.mywayroute.com/what-is-myway-route-pl... | Status: True | Time: 3.02s\n[COMPLETE] ● https://help.mywayroute.com/what-is-myway-route-pl... | Status: True | Total: 3.02s\n[FETCH]... ↓ https://help.mywayroute.com/what-is-myway-route-pl... | Status: True | Time: 1.31s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/what-is-myway-route-pl... | Time: 15ms\n[COMPLETE] ● https://help.mywayroute.com/what-is-myway-route-pl... | Status: True | Total: 4.34s\n[FETCH]... ↓ https://help.mywayroute.com/what-is-myway-route-pl... | Status: True | Time: 1.33s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/what-is-myway-route-pl... | Time: 19ms\n[COMPLETE] ● https://help.mywayroute.com/what-is-myway-route-pl... | Status: True | Total: 4.37s\nAfter batch 1:  Current Memory: 94 MB, Peak: 94 MB\nBefore batch 2:  Current Memory: 94 MB, Peak: 94 MB\n[FETCH]... ↓ https://help.mywayroute.com/how-many-addresses-can... | Status: True | Time: 0.00s\n[COMPLETE] ● https://help.mywayroute.com/how-many-addresses-can... | Status: True | Total: 0.00s\n[FETCH]... ↓ https://help.mywayroute.com/i-cant-find-an-address... | Status: True | Time: 0.84s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/i-cant-find-an-address... | Time: 14ms\n[COMPLETE] ● https://help.mywayroute.com/i-cant-find-an-address... | Status: True | Total: 1.87s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-16' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-16' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-17' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-17' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-18' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-18' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[FETCH]... ↓ https://help.mywayroute.com/how-to-contact-us... | Status: True | Time: 0.84s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/how-to-contact-us... | Time: 32ms\n[COMPLETE] ● https://help.mywayroute.com/how-to-contact-us... | Status: True | Total: 3.89s\n[FETCH]... ↓ https://help.mywayroute.com/is-there-any-differenc... | Status: True | Time: 0.89s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/is-there-any-differenc... | Time: 10ms\n[COMPLETE] ● https://help.mywayroute.com/is-there-any-differenc... | Status: True | Total: 3.91s\n[FETCH]... ↓ https://help.mywayroute.com/service-status... | Status: True | Time: 1.40s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/service-status... | Time: 11ms\n[COMPLETE] ● https://help.mywayroute.com/service-status... | Status: True | Total: 4.43s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-15' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-15' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-18' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-18' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-16' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-16' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-17' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-17' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\nAfter batch 2:  Current Memory: 95 MB, Peak: 95 MB\nBefore batch 3:  Current Memory: 95 MB, Peak: 95 MB\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-23' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-23' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-24' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-24' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-25' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-25' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-26' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-26' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-27' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-27' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[FETCH]... ↓ https://help.mywayroute.com/guides/managing-your-c... | Status: True | Time: 1.44s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/managing-your-c... | Time: 40ms\n[COMPLETE] ● https://help.mywayroute.com/guides/managing-your-c... | Status: True | Total: 4.50s\n[FETCH]... ↓ https://help.mywayroute.com/guides/understand-vehi... | Status: True | Time: 1.58s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/understand-vehi... | Time: 26ms\n[COMPLETE] ● https://help.mywayroute.com/guides/understand-vehi... | Status: True | Total: 4.62s\n[FETCH]... ↓ https://help.mywayroute.com/guides/managing-your-r... | Status: True | Time: 1.66s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/managing-your-r... | Time: 22ms\n[COMPLETE] ● https://help.mywayroute.com/guides/managing-your-r... | Status: True | Total: 4.69s\n[FETCH]... ↓ https://help.mywayroute.com/guides/understand-opti... | Status: True | Time: 1.80s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/understand-opti... | Time: 29ms\n[COMPLETE] ● https://help.mywayroute.com/guides/understand-opti... | Status: True | Total: 4.84s\n[FETCH]... ↓ https://help.mywayroute.com/guides/how-to-use-mywa... | Status: True | Time: 1.86s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/how-to-use-mywa... | Time: 34ms\n[COMPLETE] ● https://help.mywayroute.com/guides/how-to-use-mywa... | Status: True | Total: 4.91s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-26' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-26' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-27' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-27' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-25' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-25' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-24' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-24' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-23' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-23' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\nAfter batch 3:  Current Memory: 107 MB, Peak: 107 MB\nBefore batch 4:  Current Memory: 107 MB, Peak: 107 MB\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-33' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-33' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-34' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-34' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-35' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-35' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-36' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-36' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-37' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-37' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[FETCH]... ↓ https://help.mywayroute.com/guides/understand-navi... | Status: True | Time: 1.19s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/understand-navi... | Time: 22ms\n[COMPLETE] ● https://help.mywayroute.com/guides/understand-navi... | Status: True | Total: 4.22s\n[FETCH]... ↓ https://help.mywayroute.com/guides/export-your-rou... | Status: True | Time: 1.23s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/export-your-rou... | Time: 19ms\n[COMPLETE] ● https://help.mywayroute.com/guides/export-your-rou... | Status: True | Total: 4.27s\n[FETCH]... ↓ https://help.mywayroute.com/guides/proof-of-delive... | Status: True | Time: 1.25s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/proof-of-delive... | Time: 16ms\n[COMPLETE] ● https://help.mywayroute.com/guides/proof-of-delive... | Status: True | Total: 4.29s\n[FETCH]... ↓ https://help.mywayroute.com/guides/understanding-s... | Status: True | Time: 1.52s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/understanding-s... | Time: 20ms\n[COMPLETE] ● https://help.mywayroute.com/guides/understanding-s... | Status: True | Total: 4.56s\n[FETCH]... ↓ https://help.mywayroute.com/guides/import-from-fil... | Status: True | Time: 2.69s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/import-from-fil... | Time: 16ms\n[COMPLETE] ● https://help.mywayroute.com/guides/import-from-fil... | Status: True | Total: 5.72s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-34' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-34' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-36' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-36' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-37' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-37' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-33' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-33' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-35' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-35' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\nAfter batch 4:  Current Memory: 113 MB, Peak: 113 MB\nBefore batch 5:  Current Memory: 113 MB, Peak: 113 MB\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-43' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-43' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-44' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-44' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-45' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-45' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-46' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-46' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-47' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-47' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[FETCH]... ↓ https://help.mywayroute.com/faq/using-myway-withou... | Status: True | Time: 1.08s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/faq/using-myway-withou... | Time: 26ms\n[COMPLETE] ● https://help.mywayroute.com/faq/using-myway-withou... | Status: True | Total: 4.13s\n[FETCH]... ↓ https://help.mywayroute.com/guides/planning-multi-... | Status: True | Time: 1.12s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/guides/planning-multi-... | Time: 15ms\n[COMPLETE] ● https://help.mywayroute.com/guides/planning-multi-... | Status: True | Total: 4.15s\n[FETCH]... ↓ https://help.mywayroute.com/faq/why-do-some-of-my-... | Status: True | Time: 1.15s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/faq/why-do-some-of-my-... | Time: 21ms\n[COMPLETE] ● https://help.mywayroute.com/faq/why-do-some-of-my-... | Status: True | Total: 4.19s\n[FETCH]... ↓ https://help.mywayroute.com/faq/what-service-time-... | Status: True | Time: 1.30s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/faq/what-service-time-... | Time: 13ms\n[COMPLETE] ● https://help.mywayroute.com/faq/what-service-time-... | Status: True | Total: 4.33s\n[FETCH]... ↓ https://help.mywayroute.com/faq/the-route-myway-pr... | Status: True | Time: 1.38s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/faq/the-route-myway-pr... | Time: 21ms\n[COMPLETE] ● https://help.mywayroute.com/faq/the-route-myway-pr... | Status: True | Total: 4.42s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-46' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-46' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-43' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-43' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-45' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-45' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-47' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-47' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-44' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-44' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\nAfter batch 5:  Current Memory: 118 MB, Peak: 118 MB\nBefore batch 6:  Current Memory: 118 MB, Peak: 118 MB\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-53' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-53' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-54' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-54' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-55' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-55' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-56' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-56' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-57' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-57' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[FETCH]... ↓ https://help.mywayroute.com/faq/what-if-the-app-is... | Status: True | Time: 1.22s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/faq/what-if-the-app-is... | Time: 14ms\n[COMPLETE] ● https://help.mywayroute.com/faq/what-if-the-app-is... | Status: True | Total: 4.25s\n[FETCH]... ↓ https://help.mywayroute.com/faq/your-privacy-and-w... | Status: True | Time: 1.26s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/faq/your-privacy-and-w... | Time: 15ms\n[COMPLETE] ● https://help.mywayroute.com/faq/your-privacy-and-w... | Status: True | Total: 4.29s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.35s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 19ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.39s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.40s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 13ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.43s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.61s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 13ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.65s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-53' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-53' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-54' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-54' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-56' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-56' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-57' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-57' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-55' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-55' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\nAfter batch 6:  Current Memory: 122 MB, Peak: 122 MB\nBefore batch 7:  Current Memory: 122 MB, Peak: 122 MB\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-63' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-63' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-64' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-64' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-65' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-65' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-66' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-66' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-67' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-67' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.00s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 19ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.04s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.19s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 15ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.23s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.26s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 19ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.29s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.29s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 14ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.32s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.30s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 48ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.37s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-65' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-65' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-67' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-67' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-63' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-63' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-64' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-64' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-66' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-66' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\nAfter batch 7:  Current Memory: 128 MB, Peak: 128 MB\nBefore batch 8:  Current Memory: 128 MB, Peak: 128 MB\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-73' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-73' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-74' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-74' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-75' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-75' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-76' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error retrieving cached URL: Task <Task pending name='Task-76' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:364> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767]> got Future <Future pending> attached to a different loop\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 0.98s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 14ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.02s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.03s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 13ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.07s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.18s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 13ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.21s\n[FETCH]... ↓ https://help.mywayroute.com/subscription-managemen... | Status: True | Time: 1.20s\n[SCRAPE].. ◆ Processed https://help.mywayroute.com/subscription-managemen... | Time: 11ms\n[COMPLETE] ● https://help.mywayroute.com/subscription-managemen... | Status: True | Total: 4.23s\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-73' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-73' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-76' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-76' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-75' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-75' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Operation failed after 3 attempts: Task <Task pending name='Task-74' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\n[ERROR]... × Error caching URL: Task <Task pending name='Task-74' coro=<AsyncWebCrawler.arun() running at /usr/local/lib/python3.9/site-packages/crawl4ai/async_webcrawler.py:465> cb=[_gather.<locals>._done_callback() at /usr/local/lib/python3.9/asyncio/tasks.py:767, <2 more>, ProtocolCallback.__init__.<locals>.cb() at /usr/local/lib/python3.9/site-packages/playwright/_impl/_connection.py:198]> got Future <Future pending> attached to a different loop\nAfter batch 8:  Current Memory: 128 MB, Peak: 128 MB\n\nSummary:\n  - Successfully crawled: 39\n  - Failed: 0\n\nClosing crawler...\nFinal:  Current Memory: 128 MB, Peak: 128 MB\n\nPeak memory usage (MB): 128\n",
-          "return_code": 0,
-          "status": "success"
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "Read/Write Files from Disk": {
       "main": [
         [
           {
-            "node": "Wait1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute Crawl4AI Script": {
-      "main": [
-        [
-          {
-            "node": "Check File Names",
+            "node": "Wait Temp",
             "type": "main",
             "index": 0
           }
@@ -609,7 +703,7 @@
       "main": [
         [
           {
-            "node": "Wait",
+            "node": "Wait2",
             "type": "main",
             "index": 0
           }
@@ -634,17 +728,6 @@
         ]
       ]
     },
-    "Wait": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items2": {
       "main": [
         [],
@@ -657,22 +740,11 @@
         ]
       ]
     },
-    "Wait2": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Send file to Vector Store": {
       "main": [
         [
           {
-            "node": "Wait2",
+            "node": "Wait3",
             "type": "main",
             "index": 0
           }
@@ -701,18 +773,7 @@
       "main": [
         [
           {
-            "node": "Wait3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait3": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items3",
+            "node": "Wait1",
             "type": "main",
             "index": 0
           }
@@ -777,7 +838,56 @@
         ]
       ]
     },
-    "Wait1": {
+    "Set Static Vars": {
+      "main": [
+        [
+          {
+            "node": "Execute Crawl4AI Script - help.mywayroute.com",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute Crawl4AI Script - mywayroute.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Check File Names",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Crawl4AI Script - help.mywayroute.com": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Crawl4AI Script - mywayroute.com": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Temp": {
       "main": [
         [
           {
@@ -788,11 +898,69 @@
         ]
       ]
     },
-    "Set Static Vars": {
+    "Wait2": {
       "main": [
         [
           {
-            "node": "Execute Crawl4AI Script",
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
             "type": "main",
             "index": 0
           }
@@ -800,15 +968,28 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "fed1e457-13a2-43a4-bc30-77833d9e5d76",
+  "versionId": "ff55b214-8cd9-4ae8-ace7-75a3d623ef3c",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "4e7c826312664538024e55d6a488e7e7386ddec44314941ca910794e369b90aa"
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
   },
-  "id": "j4SMp8Ve6LBAuVXg",
-  "tags": []
+  "id": "kNJvro1cFAam7i20",
+  "tags": [
+    {
+      "createdAt": "2025-01-26T20:35:21.487Z",
+      "updatedAt": "2025-01-26T20:35:21.487Z",
+      "id": "TutrKQcUpuk3hV3m",
+      "name": "cron"
+    },
+    {
+      "createdAt": "2025-01-26T09:21:04.473Z",
+      "updatedAt": "2025-01-26T09:21:04.473Z",
+      "id": "VfpwjMdGODJ1skxz",
+      "name": "ai"
+    }
+  ]
 }
