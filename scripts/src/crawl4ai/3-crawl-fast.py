@@ -1,5 +1,3 @@
-# https://crawl4ai.com/mkdocs/advanced/multi-url-crawling/
-
 import asyncio
 import os
 import aiohttp
@@ -11,7 +9,7 @@ from typing import List
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse, parse_qs
 import aiofiles
 import argparse
 
@@ -50,26 +48,29 @@ async def fetch_sitemap_urls(sitemap_url: str) -> List[str]:
 
             return urls
 
-from urllib.parse import urlparse, parse_qs
-
 async def download_image(session, img_url, output_folder, page_url):
-    """Download and save an image with a proper filename."""
+    """Download and save an image with a proper filename including query parameters and page context."""
     try:
-        # Parse the URL to extract the base filename
+        # Parse the URL to extract the base filename and query parameters
         parsed_url = urlparse(img_url)
-        query_params = parse_qs(parsed_url.query)
         base_name = os.path.basename(parsed_url.path)
 
-        # Determine the correct file extension
-        extension = os.path.splitext(base_name)[1] or ".jpg"  # Default to .jpg if no extension
-        if not extension.startswith("."):
-            extension = f".{extension}"
+        # Extract the extension or default to .jpg
+        extension = os.path.splitext(base_name)[1]
+        if not extension:
+            # Try to infer from query parameters
+            if "format" in parse_qs(parsed_url.query):
+                extension = f".{parse_qs(parsed_url.query)['format'][0]}"
+            else:
+                extension = ".jpg"  # Default fallback
 
-        # Add query parameters to differentiate images if needed
-        unique_name = hashlib.md5((img_url + page_url).encode()).hexdigest() + extension
+        # Create a unique hash of the query parameters
+        query_hash = hashlib.md5(parsed_url.query.encode()).hexdigest() if parsed_url.query else "noquery"
 
-        # Final file path
-        filename = os.path.join(output_folder, unique_name)
+        # Build filename using page context, base name, and query hash
+        page_context = urlparse(page_url).path.replace("/", "_").strip("_")
+        filename = f"{page_context}_{base_name}_{query_hash}{extension}"
+        filename = os.path.join(output_folder, filename)
 
         async with session.get(img_url) as response:
             if response.status == 200:
