@@ -12,6 +12,8 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, parse_qs
 import aiofiles
 import argparse
+import shutil  # Added for folder cleanup
+
 
 def parse_args():
     """Parse command-line arguments."""
@@ -19,16 +21,37 @@ def parse_args():
     parser.add_argument("--website", type=str, help="URL of the website to crawl", required=True)
     return parser.parse_args()
 
-def ensure_output_folder(folder_name: str):
+
+def clean_folder(folder_path: str):
+    """Delete all files and subfolders in the specified folder."""
+    if os.path.exists(folder_path):
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)  # Remove file or symlink
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)  # Remove directory
+            except Exception as e:
+                print(f"Failed to delete {file_path}: {e}")
+        print(f"Cleaned folder: {folder_path}")
+    else:
+        print(f"Folder does not exist: {folder_path}")
+
+
+def ensure_output_folder(folder_name: str, clean: bool = True):
     """Ensure the output folder exists, two levels up from the script's location."""
     current_dir = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
     output_base_path = os.path.abspath(os.path.join(current_dir, "../../"))  # Move two levels up
     output_path = os.path.join(output_base_path, folder_name)  # Append the folder name
 
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
-        print(f"Created folder: {output_path}")
+    if os.path.exists(output_path) and clean:
+        clean_folder(output_path)  # Clean the folder if it exists
+
+    os.makedirs(output_path, exist_ok=True)
+    print(f"Output folder ensured: {output_path}")
     return output_path
+
 
 async def fetch_sitemap_urls(sitemap_url: str) -> List[str]:
     """Fetch and parse URLs from a sitemap XML."""
@@ -47,10 +70,11 @@ async def fetch_sitemap_urls(sitemap_url: str) -> List[str]:
                     urls.append(url.text.strip())
 
             return urls
-        
+
 
 # Global dictionary to store hashes of saved images
 saved_images_hashes = {}
+
 
 async def download_image(session, img_url, output_folder, page_url):
     """Download and save an image only if its hash does not already exist."""
@@ -100,10 +124,11 @@ async def download_image(session, img_url, output_folder, page_url):
         print(f"Error downloading image {img_url}: {e}")
         return None
 
+
 async def crawl_parallel(urls: List[str], max_concurrent: int = 3):
     print("\n=== Parallel Crawling with Image Saving ===")
 
-    output_folder = ensure_output_folder("scripts_output/crawl4ai")
+    output_folder = ensure_output_folder("scripts_output/crawl4ai", clean=True)
     image_folder = os.path.join(output_folder, "images")
     os.makedirs(image_folder, exist_ok=True)
 
@@ -183,6 +208,7 @@ async def crawl_parallel(urls: List[str], max_concurrent: int = 3):
         log_memory(prefix="Final: ")
         print(f"\nPeak memory usage (MB): {peak_memory // (1024 * 1024)}")
 
+
 async def main(sitemap_url: str):
     print("Fetching URLs from sitemap...")
     urls = await fetch_sitemap_urls(sitemap_url)
@@ -193,6 +219,7 @@ async def main(sitemap_url: str):
 
     print(f"Found {len(urls)} URLs in the sitemap.")
     await crawl_parallel(urls, max_concurrent=5)
+
 
 if __name__ == "__main__":
     args = parse_args()
