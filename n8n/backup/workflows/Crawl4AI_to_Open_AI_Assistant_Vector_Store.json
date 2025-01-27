@@ -445,7 +445,7 @@
         "url": "http://python-scripts:5500/crawl4ai",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"args\": [\n    \"--website\",\n    \"https://help.mywayroute.com/sitemap-pages.xml\"\n  ]\n}",
+        "jsonBody": "{\n  \"args\": [\n    \"--website\",\n    \"https://help.mywayroute.com/sitemap-pages.xml\",\n    \"--clean\"\n  ]\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -972,7 +972,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ff55b214-8cd9-4ae8-ace7-75a3d623ef3c",
+  "versionId": "ec7a340f-e166-4401-9ebd-4994b985940a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
