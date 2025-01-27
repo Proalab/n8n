@@ -58,7 +58,7 @@
             {
               "id": "44104031-68f3-4985-9142-a0bb822d0810",
               "name": "modified-output",
-              "value": "={{ JSON.stringify($json.data[0].content[0].text.value) }}",
+              "value": "={{ JSON.stringify($json.data[0].content[0].text.value.replace(/\\*\\*/g, '*')) }}",
               "type": "string"
             }
           ]
@@ -955,7 +955,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "825f85c7-0ce3-4f9c-977b-501242dc17a2",
+  "versionId": "7a6b545b-2823-407b-8155-36552ce3fde4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
@@ -963,16 +963,16 @@
   "id": "YjwcHveMDDdCOVBb",
   "tags": [
     {
-      "name": "ai",
-      "id": "VfpwjMdGODJ1skxz",
       "createdAt": "2025-01-26T09:21:04.473Z",
-      "updatedAt": "2025-01-26T09:21:04.473Z"
+      "updatedAt": "2025-01-26T09:21:04.473Z",
+      "id": "VfpwjMdGODJ1skxz",
+      "name": "ai"
     },
     {
-      "name": "webhook",
-      "id": "wAuHUcbaDtrFr5wp",
       "createdAt": "2025-01-26T09:21:42.206Z",
-      "updatedAt": "2025-01-26T09:21:42.206Z"
+      "updatedAt": "2025-01-26T09:21:42.206Z",
+      "id": "wAuHUcbaDtrFr5wp",
+      "name": "webhook"
     }
   ]
 }

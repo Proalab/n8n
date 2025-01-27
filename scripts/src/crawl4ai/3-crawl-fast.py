@@ -10,11 +10,20 @@ from typing import List
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from datetime import datetime
+import argparse
+
+def parse_args():
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(description="Crawl websites with Crawl4AI.")
+    parser.add_argument("--website", type=str, help="URL of the website to crawl", required=True)
+    return parser.parse_args()
 
 def ensure_output_folder(folder_name: str):
-    """Ensure the output folder exists, relative to the script's location."""
+    """Ensure the output folder exists, two levels up from the script's location."""
     current_dir = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
-    output_path = os.path.join(current_dir, folder_name)  # Create full path
+    output_base_path = os.path.abspath(os.path.join(current_dir, "../../"))  # Move two levels up
+    output_path = os.path.join(output_base_path, folder_name)  # Append the folder name
+
     if not os.path.exists(output_path):
         os.makedirs(output_path)
         print(f"Created folder: {output_path}")
@@ -42,7 +51,7 @@ async def crawl_parallel(urls: List[str], max_concurrent: int = 3):
     print("\n=== Parallel Crawling with Crawl4AI Native Filtering ===")
 
     # Dynamically set the output folder based on the script's location
-    output_folder = ensure_output_folder("markdown_output")
+    output_folder = ensure_output_folder("scripts_output/crawl4ai")
 
     peak_memory = 0
     process = psutil.Process(os.getpid())
@@ -109,9 +118,7 @@ async def crawl_parallel(urls: List[str], max_concurrent: int = 3):
         log_memory(prefix="Final: ")
         print(f"\nPeak memory usage (MB): {peak_memory // (1024 * 1024)}")
 
-async def main():
-    # sitemap_url = "https://mywayroute.com/sitemap.xml"
-    sitemap_url = "https://help.mywayroute.com/sitemap-pages.xml" 
+async def main(sitemap_url: str):
     print("Fetching URLs from sitemap...")
     urls = await fetch_sitemap_urls(sitemap_url)
 
@@ -123,4 +130,5 @@ async def main():
     await crawl_parallel(urls, max_concurrent=5)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    args = parse_args()
+    asyncio.run(main(args.website))
