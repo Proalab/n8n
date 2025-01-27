@@ -71,7 +71,7 @@ async def download_image(session, img_url, output_folder, page_url):
         # Build a unique filename using page context
         page_context = urlparse(page_url).path.replace("/", "_").strip("_")
         query_hash = hashlib.md5(parsed_url.query.encode()).hexdigest() if parsed_url.query else "noquery"
-        filename = f"{page_context}_{base_name}_{query_hash}{extension}"
+        filename = f"{parsed_url.netloc.replace('https', '').replace('http', '').replace(':', '_').replace('/', '_')}_{page_context}_{base_name}_{query_hash}{extension}"
         filename = os.path.join(output_folder, filename)
 
         # Download the image
