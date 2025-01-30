@@ -1,0 +1,490 @@
+{
+  "name": "AppStore Connect - Reply to Reviews - MyWay",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        -80
+      ],
+      "id": "f85d1d5f-4891-4cd7-b4ea-70c75e4a41c9",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18ddaf25-0c79-465d-af85-4aac84b8ef06",
+              "name": "app-id",
+              "value": "1557014712",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -920,
+        -80
+      ],
+      "id": "ffe600a2-548b-4b00-be4f-d533812a2d0c",
+      "name": "Set Static Vars"
+    },
+    {
+      "parameters": {
+        "url": "http://python-scripts:5500/generate-apple-jwt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -740,
+        -80
+      ],
+      "id": "e750b838-99d1-4ff4-aafa-fcc8b6ed0050",
+      "name": "HTTP Request - Apple JWT"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "be69eca3-c04f-4932-b442-e1611edc31b6",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -580,
+        -80
+      ],
+      "id": "9be5c707-8cdd-4770-a50f-804df3565100",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Error"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        100
+      ],
+      "id": "02ed8fe5-390f-4d07-b773-b45d88d0c4ea",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -160
+      ],
+      "id": "d7dbcc27-e8d9-46c8-8a31-946a9cf4adc4",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.appstoreconnect.apple.com/v1/apps/{{ $('Set Static Vars').item.json[\"app-id\"] }}/customerReviews",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "20"
+            },
+            {
+              "name": "sort",
+              "value": "-createdDate"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -380,
+        -160
+      ],
+      "id": "79d60c87-7ab9-4658-a62a-e5a96abb7dc6",
+      "name": "Get App Reviews"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        40,
+        -160
+      ],
+      "id": "a1df455a-b52a-45c1-97c2-9ab43c66d765",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_czjGRrApRUd5hNCXZLJt8JkO",
+          "mode": "list",
+          "cachedResultName": "Reply to Reviews (Apple AppStore Connect and Google Play)"
+        },
+        "prompt": "define",
+        "text": "={{ $('Loop Over Items').first().json.attributes.title }}\n{{ $('Loop Over Items').first().json.attributes.body }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1000,
+        -80
+      ],
+      "id": "251f1ef3-9a9b-4096-aecb-a578319eb0a8",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "0CUrLVddfEUaMM7z",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -460
+      ],
+      "id": "7615df78-e66c-4444-8103-d059546b38f4",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3908b902-ecbf-452c-9cb8-eba80c4a930a",
+              "leftValue": "={{ $json.data.attributes.state }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        -160
+      ],
+      "id": "bcd907b4-1b8f-4bfa-be70-f9dcb67a6613",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "amount": 0.1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        -200
+      ],
+      "id": "f9417d85-4cd6-473f-ad7b-756603502a6f",
+      "name": "Wait",
+      "webhookId": "c750febb-46c0-4b8f-a7a3-3dfbe0cbbba0"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1360,
+        -80
+      ],
+      "id": "47cee71f-591b-4422-b9db-b3e72658b3a3",
+      "name": "Wait1",
+      "webhookId": "830e7a47-ecfe-4890-92e2-30a17e00ae59"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.appstoreconnect.apple.com/v1/customerReviewResponses",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('HTTP Request - Apple JWT').first().json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"type\": \"customerReviewResponses\",\n    \"attributes\": {\n      \"responseBody\": \"{{ $('OpenAI').item.json.output }}\"\n    },\n    \"relationships\": {\n      \"review\": {\n        \"data\": {\n          \"type\": \"customerReviews\",\n          \"id\": \"{{ $('Loop Over Items').item.json.id }}\"\n        }\n      }\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        -80
+      ],
+      "id": "100dcf86-cd33-4545-bc94-1904bc22d956",
+      "name": "HTTP Request - Reply to Review"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.appstoreconnect.apple.com/v1/customerReviews/{{ $json.id }}/response",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('HTTP Request - Apple JWT').first().json.token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        -200
+      ],
+      "id": "d5be0fbf-1e7b-4e5b-8aee-fa4e280bcad2",
+      "name": "HTTP Request - Get Response"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Static Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Static Vars": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Apple JWT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Apple JWT": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get App Reviews",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get App Reviews": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request - Get Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Reply to Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Reply to Review": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Get Response": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fd72e16a-ac59-4632-bffa-631e5b3c1569",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4e7c826312664538024e55d6a488e7e7386ddec44314941ca910794e369b90aa"
+  },
+  "id": "f9yT2A7GCKpJrErs",
+  "tags": []
+}
