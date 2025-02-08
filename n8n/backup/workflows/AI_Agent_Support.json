@@ -10,7 +10,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -2380,
+        -2580,
         80
       ],
       "id": "02d1b946-c3ea-47e7-9dbb-959a4126949e",
@@ -45,7 +45,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        -2200,
+        -2360,
         80
       ],
       "id": "c4502d82-bae1-4d6a-ada6-25444ab5caba",
@@ -68,8 +68,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1780,
-        -220
+        1980,
+        -100
       ],
       "id": "86cd1b52-0d58-4d93-9d75-7c847d7a2083",
       "name": "Replace ** with * and JSON.stringify"
@@ -102,8 +102,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1320,
-        80
+        -1040,
+        0
       ],
       "id": "ee659503-a6ab-45b9-a3eb-3ec02539d8e8",
       "name": "If"
@@ -122,8 +122,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1960,
-        -220
+        2160,
+        -100
       ],
       "id": "5df91aa6-af9d-4a33-93ef-9894e0ec14aa",
       "name": "Chatra - Post Response",
@@ -157,8 +157,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -300,
-        -140
+        -180,
+        0
       ],
       "id": "6df6d2c5-6965-4917-84a9-27d6ba5bd8ef",
       "name": "Set ThreadId"
@@ -191,8 +191,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1020,
-        -120
+        860,
+        0
       ],
       "id": "80e58162-7232-41ca-81ae-af761f5dbe96",
       "name": "If1"
@@ -292,7 +292,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2020,
+        -2160,
         80
       ],
       "id": "c7ab335c-0dc2-416b-bc33-69f0f87da816",
@@ -339,7 +339,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1820,
+        -1960,
         80
       ],
       "id": "ed300bc4-46f5-4eca-bf43-5d362fe152ec",
@@ -352,8 +352,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1500,
-        -140
+        -1240,
+        0
       ],
       "id": "6359a2b8-5488-4a65-b75b-e117c79f50e3",
       "name": "AI Assistant - Request Message"
@@ -365,8 +365,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1280,
-        -40
+        1120,
+        60
       ],
       "id": "a758126f-2af6-4c2b-aaf2-fd43b152c396",
       "name": "Wait",
@@ -395,8 +395,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1060,
-        260
+        -780,
+        120
       ],
       "id": "74860dad-aa9b-469c-813e-819620923ae8",
       "name": "Open AI Assistant - Thread Create",
@@ -433,8 +433,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -140,
-        60
+        40,
+        0
       ],
       "id": "50416215-9a86-4818-a722-4d92703006fb",
       "name": "Open AI Assistant - Message Create",
@@ -471,8 +471,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        300,
-        60
+        440,
+        0
       ],
       "id": "a4d50b89-edd4-4283-a0c5-616f3d9bde71",
       "name": "Open AI Assistant - Create Run",
@@ -505,8 +505,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        700,
-        -100
+        680,
+        0
       ],
       "id": "8fa1d4c4-a7d0-4141-a204-f251cd5f8d65",
       "name": "Open AI Assistant - Run Check Status",
@@ -539,8 +539,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1600,
-        -220
+        1780,
+        -100
       ],
       "id": "c562b78e-53ef-4afd-a1d8-d6e9b115491e",
       "name": "Open AI Assistant - Thread Get Response",
@@ -568,8 +568,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -660,
-        -220
+        -780,
+        -160
       ],
       "id": "2ae3e4c3-fbf0-495a-8416-8d105630ad4d",
       "name": "Returning User"
@@ -591,8 +591,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -660,
-        260
+        -360,
+        120
       ],
       "id": "32b6a565-1576-43aa-898d-91402a531516",
       "name": "New User"
@@ -606,8 +606,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.5,
       "position": [
-        -1640,
-        80
+        -1440,
+        0
       ],
       "id": "e3cd6e10-be10-4109-8099-0cb0fc903533",
       "name": "Postgres - Check Thread",
@@ -712,8 +712,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.5,
       "position": [
-        -880,
-        260
+        -580,
+        120
       ],
       "id": "0b22611f-c513-45fe-8f8c-eb06067fb17b",
       "name": "Postgres - Save Thread",
@@ -725,39 +725,18 @@
       }
     },
     {
-      "parameters": {},
+      "parameters": {
+        "amount": 12
+      },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        80,
-        60
+        240,
+        0
       ],
       "id": "97cb3071-f672-4ac3-8a4c-5073ef2100e5",
       "name": "Wait1",
       "webhookId": "96972318-5236-4627-8189-43298f0ddbf7"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5542161d-4336-4a5a-9e0c-f8437ab96155",
-              "name": "counter",
-              "value": "={{$json[\"counter\"] ? $json[\"counter\"] + 1 : 1}}",
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1440,
-        -40
-      ],
-      "id": "f34b5a3e-a544-439e-b1cf-48e0f5313833",
-      "name": "Edit Fields"
     },
     {
       "parameters": {
@@ -771,8 +750,8 @@
           "conditions": [
             {
               "id": "c07bc1fb-de75-4eb9-afff-adcc4b22788d",
-              "leftValue": "={{ $json.counter }}",
-              "rightValue": 20,
+              "leftValue": "={{$runIndex}}",
+              "rightValue": 19,
               "operator": {
                 "type": "number",
                 "operation": "lt"
@@ -786,8 +765,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1600,
-        0
+        1320,
+        100
       ],
       "id": "80f7955b-0f0e-4bda-a33b-05bd9d7db2b8",
       "name": "If2"
@@ -799,11 +778,66 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        1820,
-        200
+        1780,
+        220
       ],
       "id": "5f1b4e2d-515f-40bd-b253-eab90385a09a",
       "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cd70c0d6-a391-4306-810c-8625826fda56",
+              "leftValue": "={{ $json[\"conversation-source\"] }}",
+              "rightValue": "gjkcedanwhg6s33",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "398f7e28-8530-49ef-9950-d5f73cdf4f00",
+              "leftValue": "={{ $json[\"conversation-source\"] }}",
+              "rightValue": "oszy57uvlepslay",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "6eba1cfc-85fe-433f-a455-2569c1394006",
+              "leftValue": "={{ $json[\"conversation-source\"] }}",
+              "rightValue": "fcnhbgpe4mdnexm",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1740,
+        80
+      ],
+      "id": "0f980c7a-8c5d-4fbb-8bce-2428fe624b88",
+      "name": "If Conversation Source is Support",
+      "notes": "https://app.chatra.io/settings/groups\nhttps://app.chatra.io/settings/integrations/email\n\nChatra Groups and Email Channel can be found here. AI Assistant Support Process only messages that come to Support Channel. However we can drag false path from this node to the next node (or add all groups and channels) if we want to process all communication. It will require separate instructions, but they are there already."
     }
   ],
   "pinData": {},
@@ -903,7 +937,7 @@
       "main": [
         [
           {
-            "node": "Postgres - Check Thread",
+            "node": "If Conversation Source is Support",
             "type": "main",
             "index": 0
           }
@@ -925,7 +959,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "If2",
             "type": "main",
             "index": 0
           }
@@ -1042,17 +1076,6 @@
         ]
       ]
     },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "If2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If2": {
       "main": [
         [
@@ -1070,13 +1093,31 @@
           }
         ]
       ]
+    },
+    "If Conversation Source is Support": {
+      "main": [
+        [
+          {
+            "node": "Postgres - Check Thread",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Postgres - Check Thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "8a948c52-bafe-4e0a-8d99-5c404f8e57da",
+  "versionId": "7c16128c-c745-413a-a66d-4e5adbcf6f4a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
