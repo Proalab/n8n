@@ -1,0 +1,157 @@
+{
+  "name": "Valhalla-1 AX52 Weekly Restart",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -360,
+        20
+      ],
+      "id": "fad19460-c1f0-4312-a59c-98ecad8429ae",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        220,
+        20
+      ],
+      "id": "e91e697f-323c-45fc-b3a3-9445bf650f24",
+      "name": "Wait",
+      "webhookId": "1addcc8e-6e04-44e0-aab5-37cf993f243a"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "docker compose down"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        40,
+        20
+      ],
+      "id": "b060c2ca-c6bc-473e-a005-b48bcc485e78",
+      "name": "SSH - docker compose down",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "2CwqM2nCtoYw6y1m",
+          "name": "SSH Valhalla-1 AX52"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "docker compose up -d"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        400,
+        20
+      ],
+      "id": "69d878cb-b4bf-4901-8254-f9568c9acae3",
+      "name": "SSH - docker compose up -d",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "2CwqM2nCtoYw6y1m",
+          "name": "SSH Valhalla-1 AX52"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "cd valhalla.docker"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        20
+      ],
+      "id": "3beb0aa0-6e9a-41b6-8f0a-e9b0339338eb",
+      "name": "SSH - cd valhalla.docker",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "2CwqM2nCtoYw6y1m",
+          "name": "SSH Valhalla-1 AX52"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "SSH - cd valhalla.docker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SSH - docker compose up -d",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SSH - docker compose down": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SSH - cd valhalla.docker": {
+      "main": [
+        [
+          {
+            "node": "SSH - docker compose down",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "682313c7-c46e-4d4a-b953-a1e9ac2f0dc5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4e7c826312664538024e55d6a488e7e7386ddec44314941ca910794e369b90aa"
+  },
+  "id": "3yswBF8EoLXQtpuh",
+  "tags": []
+}
