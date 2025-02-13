@@ -1,6 +1,6 @@
 ## Update Server Container (add/update python scripts)
 
-After you added new scripts (or modified them) to `/home/n8n/scripts` folder on the server you need to rebuild python-scripts container `docker compose build python-scripts --no-cache`
+After you added new scripts (or modified them) to `/home/n8n/scripts` folder on the server you need to rebuild python-scripts container `docker compose build python-scripts --no-cache` from `/home/n8n`
 
 then do `docker compose down` and `docker compose up -d` if you want to restart all n8n cluster, 
 

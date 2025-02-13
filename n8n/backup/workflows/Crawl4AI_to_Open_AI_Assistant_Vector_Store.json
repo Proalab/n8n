@@ -3,13 +3,13 @@
   "nodes": [
     {
       "parameters": {
-        "fileSelector": "={{ '/data/scripts_output/crawl4ai/' + $json.file }}",
+        "fileSelector": "=/data/scripts_output/crawl4ai/{{ $('Set Static Vars').first().json.subfolder }}/{{ $json.file }}",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        940,
+        900,
         740
       ],
       "id": "2b86e90e-5953-4f56-bd5b-f2a3a431f076",
@@ -17,7 +17,7 @@
     },
     {
       "parameters": {
-        "command": "ls /data/scripts_output/crawl4ai"
+        "command": "=ls /data/scripts_output/crawl4ai/{{ $('Set Static Vars').first().json.subfolder }}"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -35,7 +35,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        760,
+        720,
         740
       ],
       "id": "5a7e4b95-4e6b-4c73-b275-edc0eb75043e",
@@ -90,8 +90,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -200,
-        140
+        -160,
+        380
       ],
       "id": "dffe1201-ec8a-4b55-8162-28386037d5a1",
       "name": "Array of Vector Store Files",
@@ -108,7 +108,7 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        1340,
+        1280,
         740
       ],
       "id": "f1f5abde-9c34-4eda-b0d3-c4d030305732",
@@ -176,8 +176,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        600,
-        120
+        660,
+        360
       ],
       "id": "3fd3f443-5440-4951-bdd4-1e6c4c99bfbe",
       "name": "Delete Vector Store Files",
@@ -197,8 +197,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        440,
-        0
+        500,
+        240
       ],
       "id": "a4c4f619-208b-4c34-9cc4-8f743aa5ca80",
       "name": "Loop Over Items"
@@ -210,7 +210,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1740,
+        1500,
         740
       ],
       "id": "0cdcdcdf-717f-4d4f-84d6-1b846971bca4",
@@ -239,7 +239,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1960,
+        1720,
         860
       ],
       "id": "6b86dd29-a52c-43b8-8f66-435ed55bea57",
@@ -260,8 +260,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -460,
-        480
+        -340,
+        520
       ],
       "id": "69c47d69-a996-4275-9de7-be20adee4ba1",
       "name": "Loop Over Items3"
@@ -277,8 +277,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -220,
-        540
+        -100,
+        580
       ],
       "id": "b6f08426-1874-49c4-896d-842c24b9db52",
       "name": "Delete files1",
@@ -302,8 +302,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        -880,
-        320
+        -760,
+        480
       ],
       "id": "18b682c4-41cc-4d3a-babb-81585368e0f6",
       "name": "OpenAI",
@@ -345,8 +345,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -680,
-        320
+        -600,
+        480
       ],
       "id": "17b89e32-0b05-44bc-b88b-ba16c1ff780a",
       "name": "If1"
@@ -379,8 +379,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        0,
-        140
+        40,
+        380
       ],
       "id": "fc623b22-dbd6-4b04-9e96-4d27947be11a",
       "name": "If2"
@@ -399,7 +399,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -2780,
+        -2700,
         740
       ],
       "id": "c43e9452-25f3-425d-8fa2-a7cffb75f343",
@@ -414,6 +414,12 @@
               "name": "vector-store-id",
               "value": "vs_So0aIj8ssLKtMOHfImRmQMyv",
               "type": "string"
+            },
+            {
+              "id": "16a824b4-59c1-4a8a-ba12-4b62aa6cc439",
+              "name": "subfolder",
+              "value": "myway_route_planner",
+              "type": "string"
             }
           ]
         },
@@ -422,7 +428,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2580,
+        -2500,
         740
       ],
       "id": "4feca193-a260-43cd-853d-b128b7e5b147",
@@ -445,7 +451,7 @@
         "url": "http://python-scripts:5500/crawl4ai",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"args\": [\n    \"--website\",\n    \"https://help.mywayroute.com/sitemap-pages.xml\",\n    \"--clean\"\n  ]\n}",
+        "jsonBody": "={\n  \"args\": [\n    \"--website\",\n    \"https://help.mywayroute.com/sitemap-pages.xml\",\n    \"--subfolder\",\n    \"{{ $json.subfolder }}\",\n    \"--clean\"\n  ]\n}",
         "options": {
           "timeout": 1800000
         }
@@ -453,8 +459,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -2320,
-        580
+        -2180,
+        600
       ],
       "id": "a6add510-069f-46bb-98a6-aa16ae18a565",
       "name": "Execute Crawl4AI Script - help.mywayroute.com"
@@ -465,7 +471,7 @@
         "url": "http://python-scripts:5500/crawl4ai",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"args\": [\n    \"--website\",\n    \"https://www.mywayroute.com/sitemap.xml\"\n  ]\n}",
+        "jsonBody": "={\n  \"args\": [\n    \"--website\",\n    \"https://www.mywayroute.com/sitemap.xml\",\n    \"--subfolder\",\n    \"{{ $json.subfolder }}\"\n  ]\n} ",
         "options": {
           "timeout": 1800000
         }
@@ -473,8 +479,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -2320,
-        900
+        -2180,
+        880
       ],
       "id": "233be2ed-42ea-4879-ab03-34df54424bca",
       "name": "Execute Crawl4AI Script - mywayroute.com"
@@ -486,7 +492,7 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1140,
+        1100,
         740
       ],
       "id": "5685c9d4-78d2-4999-a098-7b4a6b4c1946",
@@ -495,13 +501,13 @@
     },
     {
       "parameters": {
-        "amount": 2
+        "amount": 0.5
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        740,
-        120
+        800,
+        360
       ],
       "id": "0d5d32b6-ec06-4c73-91cd-3852c5e5d523",
       "name": "Wait2",
@@ -509,13 +515,13 @@
     },
     {
       "parameters": {
-        "amount": 0.5
+        "amount": 0.25
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -80,
-        540
+        40,
+        580
       ],
       "id": "34d42f2c-ed22-4da2-b42b-ac6ac7b83a2e",
       "name": "Wait1",
@@ -523,12 +529,12 @@
     },
     {
       "parameters": {
-        "amount": 0.5
+        "amount": 0.25
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        2120,
+        1880,
         860
       ],
       "id": "4f942117-d1a1-4dfa-af99-e3e1db1d75eb",
@@ -542,8 +548,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        -1880,
-        720
+        -1760,
+        740
       ],
       "id": "fe71f930-5984-4ea1-a1f8-b36032fd2cd2",
       "name": "Stop and Error"
@@ -576,8 +582,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2100,
-        580
+        -1980,
+        600
       ],
       "id": "5c82819b-9253-4111-bd97-e59112c841f1",
       "name": "If command shows no error 1"
@@ -610,8 +616,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2100,
-        900
+        -1980,
+        880
       ],
       "id": "502354d7-3df5-49cd-a4cc-2ec025cd06b2",
       "name": "If command shows no error 2"
@@ -621,7 +627,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1960,
+        1720,
         700
       ],
       "id": "93a70acc-ad05-4bf0-abce-71c1623654ed",
@@ -871,6 +877,11 @@
             "node": "Execute Crawl4AI Script - mywayroute.com",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -993,7 +1004,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2e0f1a20-5944-473a-91d5-d9364745e68d",
+  "versionId": "a7f952e9-3f8b-4907-b697-5507e3e37c55",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
