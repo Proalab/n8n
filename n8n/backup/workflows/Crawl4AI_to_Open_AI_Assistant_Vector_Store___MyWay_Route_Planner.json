@@ -29,7 +29,7 @@
           "__rl": true,
           "value": "zFmMbVDbKxwX3Sbg",
           "mode": "list",
-          "cachedResultName": "Crawl4AI to Open AI Assistant Vector Store - TEST"
+          "cachedResultName": "Crawl4AI to Open AI Assistant Vector Store"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -81,11 +81,33 @@
       ],
       "id": "a6473ac1-3d36-4c9a-b83d-d03b3101cdd9",
       "name": "Execute Workflow"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -180
+      ],
+      "id": "8a3d9dc0-97a3-4554-8c69-12e15de4edba",
+      "name": "When clicking ‘Test workflow’"
     }
   ],
   "pinData": {},
   "connections": {
     "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
       "main": [
         [
           {
@@ -101,7 +123,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "88374700-5f05-4e55-9649-92f60dfd9dfc",
+  "versionId": "5ea9e92b-b262-418e-992a-167c0970fa09",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"

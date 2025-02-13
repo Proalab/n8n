@@ -1,5 +1,5 @@
 {
-  "name": "Open AI - Delete Assistant Files",
+  "name": "Open AI - Delete Files (Assistant Files) from Open AI",
   "nodes": [
     {
       "parameters": {
@@ -97,7 +97,7 @@
     },
     {
       "parameters": {
-        "amount": 0.25
+        "amount": 0.4
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
@@ -241,7 +241,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ba2d5611-76dc-46ff-9888-e2a17c9f31cd",
+  "versionId": "77404db7-21fe-455e-bd79-101396d3963d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
