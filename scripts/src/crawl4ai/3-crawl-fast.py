@@ -19,9 +19,8 @@ def parse_args():
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(description="Crawl websites with Crawl4AI.")
     parser.add_argument("--website", type=str, help="URL of the website to crawl", required=True)
-    parser.add_argument(
-        "--clean", action="store_true", help="Clean the output folder before crawling"
-    )
+    parser.add_argument("--subfolder", type=str, help="Subfolder name inside scripts_output/crawl4ai", required=True)
+    parser.add_argument("--clean", action="store_true", help="Clean the output folder before crawling")
     return parser.parse_args()
 
 
@@ -42,12 +41,17 @@ def clean_folder(folder_path: str):
         print(f"Folder does not exist: {folder_path}")
 
 
-def ensure_output_folder(folder_name: str, clean: bool = False):
-    """Ensure the output folder exists, two levels up from the script's location."""
+def ensure_output_folder(base_folder: str, subfolder: str, clean: bool = False):
+    """Ensure both the base folder and subfolder exist inside the output path."""
     current_dir = os.path.dirname(os.path.abspath(__file__))  # Get current script directory
     output_base_path = os.path.abspath(os.path.join(current_dir, "../../"))  # Move two levels up
-    output_path = os.path.join(output_base_path, folder_name)  # Append the folder name
 
+    # Ensure base folder exists
+    base_folder_path = os.path.join(output_base_path, base_folder)
+    os.makedirs(base_folder_path, exist_ok=True)
+
+    # Ensure subfolder exists inside base folder
+    output_path = os.path.join(base_folder_path, subfolder)
     if os.path.exists(output_path) and clean:
         clean_folder(output_path)  # Clean the folder if the flag is set
 
@@ -128,10 +132,11 @@ async def download_image(session, img_url, output_folder, page_url):
         return None
 
 
-async def crawl_parallel(urls: List[str], max_concurrent: int = 3, clean: bool = False):
+async def crawl_parallel(urls: List[str], subfolder: str, max_concurrent: int = 3, clean: bool = False):
     print("\n=== Parallel Crawling with Image Saving ===")
 
-    output_folder = ensure_output_folder("scripts_output/crawl4ai", clean=clean)
+    base_folder = "scripts_output/crawl4ai"
+    output_folder = ensure_output_folder(base_folder, subfolder, clean=clean)
     image_folder = os.path.join(output_folder, "images")
     os.makedirs(image_folder, exist_ok=True)
 
@@ -212,7 +217,7 @@ async def crawl_parallel(urls: List[str], max_concurrent: int = 3, clean: bool =
         print(f"\nPeak memory usage (MB): {peak_memory // (1024 * 1024)}")
 
 
-async def main(sitemap_url: str, clean: bool):
+async def main(sitemap_url: str, subfolder: str, clean: bool):
     print("Fetching URLs from sitemap...")
     urls = await fetch_sitemap_urls(sitemap_url)
 
@@ -221,9 +226,9 @@ async def main(sitemap_url: str, clean: bool):
         return
 
     print(f"Found {len(urls)} URLs in the sitemap.")
-    await crawl_parallel(urls, max_concurrent=5, clean=clean)
+    await crawl_parallel(urls, subfolder, max_concurrent=5, clean=clean)
 
 
 if __name__ == "__main__":
     args = parse_args()
-    asyncio.run(main(args.website, args.clean))
+    asyncio.run(main(args.website, args.subfolder, args.clean))
