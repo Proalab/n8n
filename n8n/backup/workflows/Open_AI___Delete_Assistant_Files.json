@@ -1,0 +1,264 @@
+{
+  "name": "Open AI - Delete Assistant Files",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 6,
+              "triggerAtHour": 3,
+              "triggerAtMinute": 20
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "77a1781f-e79f-4a0b-8e08-fed294e704a2",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        620,
+        0
+      ],
+      "id": "fb8660ad-68be-403a-b710-b1128eeb9c6f",
+      "name": "Loop Over Items6"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://api.openai.com/v1/files/{{ $json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        40
+      ],
+      "id": "53578a31-068e-4a53-9990-360ab099a71b",
+      "name": "Delete files",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "openAiApi": {
+          "id": "yLJyJqOUtRWRIiby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8c79b677-72b3-4efc-b9a5-df48144595cd",
+              "leftValue": "={{ $json.object }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        380,
+        0
+      ],
+      "id": "9ff256b1-9d7a-4ee0-821e-bc83e80deca9",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "amount": 0.25
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        40
+      ],
+      "id": "2221b79f-7372-4410-877a-4be088bd9655",
+      "name": "Wait6",
+      "webhookId": "228074a6-992d-403e-b80a-5f4a72e219c7"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "options": {
+          "purpose": "assistants"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        200,
+        0
+      ],
+      "id": "73e72131-e2a2-4f3c-b5fb-90080d4f27c6",
+      "name": "OpenAI",
+      "alwaysOutputData": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "yLJyJqOUtRWRIiby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        260
+      ],
+      "id": "19eeefaf-0eeb-4118-8b6e-c3bfbe4d3ef2",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "content": "## Clean Up Effort\nWe need to upload files to be able to use them in Vectore Stores. However, when you upload files often, files area grows very big. There is no way to clean previous batch, only all files related to assistant. However even if files deleted from files Vectore Store has them cached, so it's pretty safe to do so. Cleaning Vectore Store Files are done inside upload of new files",
+        "height": 200,
+        "width": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -20,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "bf6e4b94-acb7-4987-a315-5ab5e4ee7be2",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Loop Over Items6": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Delete files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete files": {
+      "main": [
+        [
+          {
+            "node": "Wait6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait6": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ba2d5611-76dc-46ff-9888-e2a17c9f31cd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "4mvvBxZWfv1eqlMq",
+  "tags": [
+    {
+      "createdAt": "2025-01-26T20:35:21.487Z",
+      "updatedAt": "2025-01-26T20:35:21.487Z",
+      "id": "TutrKQcUpuk3hV3m",
+      "name": "cron"
+    },
+    {
+      "createdAt": "2025-01-26T09:21:04.473Z",
+      "updatedAt": "2025-01-26T09:21:04.473Z",
+      "id": "VfpwjMdGODJ1skxz",
+      "name": "ai"
+    }
+  ]
+}

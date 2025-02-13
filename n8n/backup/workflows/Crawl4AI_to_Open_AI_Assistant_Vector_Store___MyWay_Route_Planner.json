@@ -1,0 +1,118 @@
+{
+  "name": "Crawl4AI to Open AI Assistant Vector Store - MyWay Route Planner",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 2,
+              "triggerAtHour": 5,
+              "triggerAtMinute": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -20
+      ],
+      "id": "b0518035-ac81-466e-89a6-f5d7fadb4199",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "zFmMbVDbKxwX3Sbg",
+          "mode": "list",
+          "cachedResultName": "Crawl4AI to Open AI Assistant Vector Store - TEST"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "vector-store-id": "vs_So0aIj8ssLKtMOHfImRmQMyv",
+            "websites": "[\"https://help.mywayroute.com/sitemap-pages.xml\", \"https://www.mywayroute.com/sitemap.xml\"]",
+            "subfolder": "myway_route_planner"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "vector-store-id",
+              "displayName": "vector-store-id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "subfolder",
+              "displayName": "subfolder",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "websites",
+              "displayName": "websites",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "array"
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        60,
+        -20
+      ],
+      "id": "a6473ac1-3d36-4c9a-b83d-d03b3101cdd9",
+      "name": "Execute Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "88374700-5f05-4e55-9649-92f60dfd9dfc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "ji2sRYrS8ssbIQ08",
+  "tags": [
+    {
+      "createdAt": "2025-01-26T20:35:21.487Z",
+      "updatedAt": "2025-01-26T20:35:21.487Z",
+      "id": "TutrKQcUpuk3hV3m",
+      "name": "cron"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "name": "Crawl4AI to Open AI Assistant Vector Store - Proalab",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 2,
+              "triggerAtHour": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -20
+      ],
+      "id": "4745717f-87be-438b-b9bd-ccce6d3e83cb",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "zFmMbVDbKxwX3Sbg",
+          "mode": "list",
+          "cachedResultName": "Crawl4AI to Open AI Assistant Vector Store - TEST"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "vector-store-id": "vs_67adb06ae454819182b3563170727a2b",
+            "websites": "[\"https://proalab.com/sitemap.xml\"]",
+            "subfolder": "proalab"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "vector-store-id",
+              "displayName": "vector-store-id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "subfolder",
+              "displayName": "subfolder",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "websites",
+              "displayName": "websites",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "array"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        60,
+        -20
+      ],
+      "id": "0219c007-e385-4e74-9951-bfbf4d2c9829",
+      "name": "Execute Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "239bc9fd-5bc1-4dff-bb85-702847e7cab4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "Y73ndtRtyGB2bJ7E",
+  "tags": [
+    {
+      "createdAt": "2025-01-26T20:35:21.487Z",
+      "updatedAt": "2025-01-26T20:35:21.487Z",
+      "id": "TutrKQcUpuk3hV3m",
+      "name": "cron"
+    }
+  ]
+}
