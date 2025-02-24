@@ -3,3 +3,4 @@ psutil
 crawl4ai
 beautifulsoup4
 playwright>=1.49.0
+pycountry
