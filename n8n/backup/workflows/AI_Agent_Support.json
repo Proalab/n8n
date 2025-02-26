@@ -68,7 +68,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1040,
+        -1080,
         0
       ],
       "id": "ee659503-a6ab-45b9-a3eb-3ec02539d8e8",
@@ -123,7 +123,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -180,
+        -20,
         0
       ],
       "id": "6df6d2c5-6965-4917-84a9-27d6ba5bd8ef",
@@ -254,7 +254,7 @@
             {
               "id": "aae1d6e4-e5d8-4e1b-93a0-e50ff7db51b6",
               "name": "open-ai-max-prompt-tokens",
-              "value": "8192",
+              "value": "10216",
               "type": "string"
             },
             {
@@ -397,8 +397,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -780,
-        120
+        -860,
+        100
       ],
       "id": "74860dad-aa9b-469c-813e-819620923ae8",
       "name": "Open AI Assistant - Thread Create",
@@ -415,7 +415,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://api.openai.com/v1/threads/{{ $('Set ThreadId').item.json.threadId }}/messages ",
+        "url": "=https://api.openai.com/v1/threads/{{ $('Postgres - Check Thread').item.json.threadid }}/messages ",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "openAiApi",
         "sendHeaders": true,
@@ -435,8 +435,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        40,
-        0
+        -300,
+        -160
       ],
       "id": "50416215-9a86-4818-a722-4d92703006fb",
       "name": "Open AI Assistant - Message Create",
@@ -570,7 +570,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -780,
+        -860,
         -160
       ],
       "id": "2ae3e4c3-fbf0-495a-8416-8d105630ad4d",
@@ -593,8 +593,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -360,
-        120
+        -500,
+        100
       ],
       "id": "32b6a565-1576-43aa-898d-91402a531516",
       "name": "New User"
@@ -641,7 +641,7 @@
           "value": {
             "key": "={{ $('Set Calculated Vars').item.json[\"ai-agent-support-conversations-key\"] }}",
             "email": "={{ $('Webhook').item.json.body.client.info.email }}",
-            "conversationid": "={{ $('Filter').item.json.body.conversationId }}",
+            "conversationid": "={{ $('Webhook').item.json.body.conversationId }}",
             "threadid": "={{ $json.id }}",
             "source": "={{ $('Set Calculated Vars').item.json['conversation-source'] }}",
             "createdat": "={{ new Date($('Webhook').item.json.body.messages[0].createdAt).toISOString().slice(0, 19).replace('T', ' ') }}"
@@ -714,8 +714,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.5,
       "position": [
-        -580,
-        120
+        -680,
+        100
       ],
       "id": "0b22611f-c513-45fe-8f8c-eb06067fb17b",
       "name": "Postgres - Save Thread",
@@ -728,12 +728,12 @@
     },
     {
       "parameters": {
-        "amount": 12
+        "amount": 2
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        240,
+        140,
         0
       ],
       "id": "97cb3071-f672-4ac3-8a4c-5073ef2100e5",
@@ -844,13 +844,13 @@
     {
       "parameters": {
         "content": "## Check If message is from user\nWe check if the last message was a message from actual user and of there is no active run for that message then we need to generate response",
-        "height": 420,
+        "height": 320,
         "width": 500
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
         400,
-        -100
+        -20
       ],
       "typeVersion": 1,
       "id": "cc22c3e8-e8ef-45c3-a6dc-e127c6db9092",
@@ -962,22 +962,22 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        -2360,
-        400
+        -2400,
+        480
       ],
       "id": "2df7b227-00df-425f-8d64-e87b7df84a4a",
       "name": "Filter1"
     },
     {
       "parameters": {
-        "content": "## If we need to send only client data to Assistant AI",
-        "height": 280,
+        "content": "## Filter out messages from agents\nIf we need to send only client data to Assistant AI.\n\nCurrently we send all data to the thread, but don't execute runs when data come from the support agent (assistant /operator)",
+        "height": 360,
         "width": 320
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -2440,
-        280
+        -2460,
+        260
       ],
       "typeVersion": 1,
       "id": "04af572a-71dd-4127-b19d-1d077ad5711c",
@@ -993,6 +993,114 @@
       ],
       "id": "61391355-ae70-45a5-913c-1360ed59387b",
       "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/{{ $('Postgres - Check Thread').item.json.threadid }}/messages ",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -680,
+        -160
+      ],
+      "id": "da4ec224-2626-4323-8be1-8d3426ab66bd",
+      "name": "Open AI Assistant - Get All Message1",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "openAiApi": {
+          "id": "yLJyJqOUtRWRIiby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "955a8977-3856-477f-97f7-ce4f8af4f419",
+              "leftValue": "={{ $json.data[0].content[0].text.value }}",
+              "rightValue": "={{ $('AI Assistant - Request Message').item.json.result.content[0].text }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -500,
+        -160
+      ],
+      "id": "c9e5c576-3984-4a61-9596-5ce5e5beacd5",
+      "name": "If4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        320
+      ],
+      "id": "6aa4b178-3191-481a-adf2-14e1989f1000",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "content": "Verify if a message is not a duplicate of the previous OpenAI response so we don't send OpenAI replies back to OpenAI Thread.",
+        "height": 240,
+        "width": 420
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -740,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "fff68a1b-e250-4c6d-ada2-81385e5e78ee",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Chatra Response\nPost data back to Chatra",
+        "height": 300,
+        "width": 620
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1940,
+        -200
+      ],
+      "typeVersion": 1,
+      "id": "eba4eecf-aedc-4539-b5f0-5aaff8554ca8",
+      "name": "Sticky Note3"
     }
   ],
   "pinData": {},
@@ -1041,7 +1149,7 @@
       "main": [
         [
           {
-            "node": "Open AI Assistant - Message Create",
+            "node": "Wait1",
             "type": "main",
             "index": 0
           }
@@ -1125,7 +1233,7 @@
       "main": [
         [
           {
-            "node": "Wait1",
+            "node": "Set ThreadId",
             "type": "main",
             "index": 0
           }
@@ -1169,7 +1277,7 @@
       "main": [
         [
           {
-            "node": "Set ThreadId",
+            "node": "Open AI Assistant - Get All Message1",
             "type": "main",
             "index": 0
           }
@@ -1284,13 +1392,42 @@
           }
         ]
       ]
+    },
+    "Open AI Assistant - Get All Message1": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Open AI Assistant - Message Create",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "54e40dc0-1c1f-452f-88ba-2ddb41479211",
+  "versionId": "02bd46c5-340a-49ff-ad87-f8d2a16b1f67",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
