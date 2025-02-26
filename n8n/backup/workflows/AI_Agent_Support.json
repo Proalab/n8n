@@ -1041,7 +1041,7 @@
             {
               "id": "955a8977-3856-477f-97f7-ce4f8af4f419",
               "leftValue": "={{ $json.data[0].content[0].text.value }}",
-              "rightValue": "={{ $('AI Assistant - Request Message').item.json.result.content[0].text }}",
+              "rightValue": "={{ $('Webhook').item.json.body.messages[0].message }}",
               "operator": {
                 "type": "string",
                 "operation": "notEquals"
@@ -1423,11 +1423,11 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "02bd46c5-340a-49ff-ad87-f8d2a16b1f67",
+  "versionId": "50d75006-8c28-4efc-8b70-ee92a8499641",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
