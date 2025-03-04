@@ -34,8 +34,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2200,
-        -100
+        2460,
+        20
       ],
       "id": "86cd1b52-0d58-4d93-9d75-7c847d7a2083",
       "name": "Replace ** with * and JSON.stringify"
@@ -88,8 +88,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2380,
-        -100
+        2660,
+        20
       ],
       "id": "5df91aa6-af9d-4a33-93ef-9894e0ec14aa",
       "name": "Chatra - Post Response",
@@ -123,8 +123,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -20,
-        0
+        300,
+        100
       ],
       "id": "6df6d2c5-6965-4917-84a9-27d6ba5bd8ef",
       "name": "Set ThreadId"
@@ -362,7 +362,7 @@
     },
     {
       "parameters": {
-        "amount": 3
+        "amount": 2
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
@@ -435,7 +435,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -300,
+        -60,
         -160
       ],
       "id": "50416215-9a86-4818-a722-4d92703006fb",
@@ -542,7 +542,7 @@
       "typeVersion": 4.2,
       "position": [
         2000,
-        -100
+        20
       ],
       "id": "c562b78e-53ef-4afd-a1d8-d6e9b115491e",
       "name": "Open AI Assistant - Thread Get Response",
@@ -728,20 +728,6 @@
     },
     {
       "parameters": {
-        "amount": 2
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        140,
-        0
-      ],
-      "id": "97cb3071-f672-4ac3-8a4c-5073ef2100e5",
-      "name": "Wait1",
-      "webhookId": "96972318-5236-4627-8189-43298f0ddbf7"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -780,8 +766,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        2000,
-        220
+        2660,
+        420
       ],
       "id": "5f1b4e2d-515f-40bd-b253-eab90385a09a",
       "name": "Stop and Error"
@@ -843,14 +829,14 @@
     },
     {
       "parameters": {
-        "content": "## Check If message is from user\nWe check if the last message was a message from actual user and of there is no active run for that message then we need to generate response",
-        "height": 320,
-        "width": 500
+        "content": "## Check If message is from user\nGet all messages for the thread and check if the last message is a message from actual user not assistant. If there is no active run for that message then we need to generate response",
+        "height": 420,
+        "width": 260
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        400,
-        -20
+        240,
+        -140
       ],
       "typeVersion": 1,
       "id": "cc22c3e8-e8ef-45c3-a6dc-e127c6db9092",
@@ -875,8 +861,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        480,
-        120
+        540,
+        100
       ],
       "id": "f748f3b5-7d49-4130-b333-86034131ecfe",
       "name": "Open AI Assistant - Get All Message",
@@ -929,7 +915,7 @@
       "typeVersion": 2.2,
       "position": [
         700,
-        120
+        100
       ],
       "id": "a3dec88c-4c95-49a9-a71d-103fbd487eeb",
       "name": "If3"
@@ -988,8 +974,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        960,
-        360
+        2660,
+        240
       ],
       "id": "61391355-ae70-45a5-913c-1360ed59387b",
       "name": "No Operation, do nothing"
@@ -1030,6 +1016,36 @@
     },
     {
       "parameters": {
+        "content": "Verify if a message is not a duplicate of the previous OpenAI response so we don't send OpenAI replies back to OpenAI Thread.",
+        "height": 260,
+        "width": 420
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -740,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "fff68a1b-e250-4c6d-ada2-81385e5e78ee",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Chatra Response\nPost data back to Chatra. Also we check if operator already replied",
+        "height": 300,
+        "width": 920
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1960,
+        -100
+      ],
+      "typeVersion": 1,
+      "id": "eba4eecf-aedc-4539-b5f0-5aaff8554ca8",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -1059,48 +1075,56 @@
         -160
       ],
       "id": "c9e5c576-3984-4a61-9596-5ce5e5beacd5",
-      "name": "If4"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        -140,
-        320
-      ],
-      "id": "6aa4b178-3191-481a-adf2-14e1989f1000",
-      "name": "No Operation, do nothing1"
+      "name": "Check Thread Last Message"
     },
     {
       "parameters": {
-        "content": "Verify if a message is not a duplicate of the previous OpenAI response so we don't send OpenAI replies back to OpenAI Thread.",
-        "height": 240,
-        "width": 420
+        "amount": 6
       },
-      "type": "n8n-nodes-base.stickyNote",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
       "position": [
-        -740,
-        -240
+        -280,
+        -260
       ],
-      "typeVersion": 1,
-      "id": "fff68a1b-e250-4c6d-ada2-81385e5e78ee",
-      "name": "Sticky Note2"
+      "id": "6b1d4e0b-911c-4cbb-aabd-952b09f12c56",
+      "name": "Wait2",
+      "webhookId": "3f8c2976-b6be-4938-a87c-fae9819893dc"
     },
     {
       "parameters": {
-        "content": "## Chatra Response\nPost data back to Chatra",
-        "height": 300,
-        "width": 620
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a76ae748-9abf-4892-ac06-8165024585e1",
+              "leftValue": "={{ $json.data[0].run_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.stickyNote",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
       "position": [
-        1940,
-        -200
+        2220,
+        20
       ],
-      "typeVersion": 1,
-      "id": "eba4eecf-aedc-4539-b5f0-5aaff8554ca8",
-      "name": "Sticky Note3"
+      "id": "46e05f0f-c882-4b26-b707-d47e4321a2b9",
+      "name": "If4",
+      "notes": "check if operator already replied"
     }
   ],
   "pinData": {},
@@ -1149,7 +1173,7 @@
       "main": [
         [
           {
-            "node": "Wait1",
+            "node": "Open AI Assistant - Get All Message",
             "type": "main",
             "index": 0
           }
@@ -1266,7 +1290,7 @@
       "main": [
         [
           {
-            "node": "Replace ** with * and JSON.stringify",
+            "node": "If4",
             "type": "main",
             "index": 0
           }
@@ -1311,17 +1335,6 @@
         [
           {
             "node": "New User",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait1": {
-      "main": [
-        [
-          {
-            "node": "Open AI Assistant - Get All Message",
             "type": "main",
             "index": 0
           }
@@ -1397,7 +1410,36 @@
       "main": [
         [
           {
-            "node": "If4",
+            "node": "Check Thread Last Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Thread Last Message": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Open AI Assistant - Message Create",
             "type": "main",
             "index": 0
           }
@@ -1408,14 +1450,14 @@
       "main": [
         [
           {
-            "node": "Open AI Assistant - Message Create",
+            "node": "Replace ** with * and JSON.stringify",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "No Operation, do nothing1",
+            "node": "No Operation, do nothing",
             "type": "main",
             "index": 0
           }
@@ -1427,7 +1469,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "50d75006-8c28-4efc-8b70-ee92a8499641",
+  "versionId": "d799af6d-8f5b-4e07-8f16-01ca8b14b749",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
