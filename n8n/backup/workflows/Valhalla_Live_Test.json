@@ -1,0 +1,215 @@
+{
+  "name": "Valhalla Live Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        -120
+      ],
+      "id": "24d5d353-d6a5-42ad-bdc2-e656664c6686",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -380,
+        100
+      ],
+      "id": "57bd201c-b4fd-40eb-827e-2c2c0428bf33",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://65.109.157.151:8002/sources_to_targets",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"sources\": [\n    {\n      \"lat\": 40.712776,\n      \"lon\": -74.005974\n    },\n    {\n      \"lat\": 41.203323,\n      \"lon\": -77.194527\n    },\n    {\n      \"lat\": 39.952583,\n      \"lon\": -75.165222\n    },\n    {\n      \"lat\": 42.360081,\n      \"lon\": -71.058884\n    },\n    {\n      \"lat\": 38.907192,\n      \"lon\": -77.036871\n    }\n  ],\n  \"targets\": [\n    {\n      \"lat\": 40.712776,\n      \"lon\": -74.005974\n    },\n    {\n      \"lat\": 41.203323,\n      \"lon\": -77.194527\n    },\n    {\n      \"lat\": 39.952583,\n      \"lon\": -75.165222\n    },\n    {\n      \"lat\": 42.360081,\n      \"lon\": -71.058884\n    },\n    {\n      \"lat\": 38.907192,\n      \"lon\": -77.036871\n    }\n  ],\n  \"costing\": \"auto\"\n}",
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -180,
+        100
+      ],
+      "id": "bfed2a17-22c5-4db7-bd9b-909930a859ae",
+      "name": "HTTP Request",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a271ded4-53f6-4c70-bb80-3a3dbf79fbdd",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        40,
+        100
+      ],
+      "id": "22ea6474-8b79-4ff2-8a17-6b010ed60b54",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        500,
+        200
+      ],
+      "id": "259802be-2bd6-4c91-bde3-39121630b74f",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "from": "+12186958003",
+        "to": "+375257205835",
+        "message": "=Houston, we have a problem! Valhalla Error: {{ $json.error.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        360,
+        0
+      ],
+      "id": "53f2bf77-b630-40f5-8ed9-9c335b4a786d",
+      "name": "Twilio to AZ",
+      "credentials": {
+        "twilioApi": {
+          "id": "yKX80VmFp1r5WfpL",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "+12186958003",
+        "to": "+380682550720",
+        "message": "=Houston, we have a problem! Valhalla Error: {{ $json.error.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        360,
+        -180
+      ],
+      "id": "5327192f-9f56-456e-ae95-5d3a4d20bb82",
+      "name": "Twilio to AB",
+      "credentials": {
+        "twilioApi": {
+          "id": "yKX80VmFp1r5WfpL",
+          "name": "Twilio account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Twilio to AB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twilio to AZ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e5dbc99f-e653-4daf-bded-15f341e6e28c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "LWQw2HTiJW2qAJ2j",
+  "tags": []
+}
