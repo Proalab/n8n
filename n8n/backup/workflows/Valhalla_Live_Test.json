@@ -99,6 +99,7 @@
     },
     {
       "parameters": {
+        "resource": "call",
         "from": "+12186958003",
         "to": "+375257205835",
         "message": "=Houston, we have a problem! Valhalla Error: {{ $json.error.message }}",
@@ -107,7 +108,7 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        360,
+        280,
         0
       ],
       "id": "53f2bf77-b630-40f5-8ed9-9c335b4a786d",
@@ -129,7 +130,7 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        360,
+        280,
         -180
       ],
       "id": "5327192f-9f56-456e-ae95-5d3a4d20bb82",
@@ -140,6 +141,73 @@
           "name": "Twilio account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "deactivate",
+        "workflowId": {
+          "__rl": true,
+          "value": "LWQw2HTiJW2qAJ2j",
+          "mode": "list",
+          "cachedResultName": "Valhalla Live Test (#LWQw2HTiJW2qAJ2j)"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        500,
+        0
+      ],
+      "id": "a7a1f699-9910-41ad-8a11-f44d2eb7ffd1",
+      "name": "n8n",
+      "credentials": {
+        "n8nApi": {
+          "id": "HzhbEOI6edd8qbT3",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "activate",
+        "workflowId": {
+          "__rl": true,
+          "value": "LWQw2HTiJW2qAJ2j",
+          "mode": "list",
+          "cachedResultName": "Valhalla Live Test (#LWQw2HTiJW2qAJ2j)"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        940,
+        0
+      ],
+      "id": "c789e65b-2a30-4a7d-9f50-213992cccee1",
+      "name": "n8n1",
+      "credentials": {
+        "n8nApi": {
+          "id": "HzhbEOI6edd8qbT3",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 60,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        0
+      ],
+      "id": "a2d47a3e-7994-48f3-a49c-dfae0ac62c18",
+      "name": "Wait",
+      "webhookId": "bf7decfa-6ffa-4264-999f-0330eeba02d9"
     }
   ],
   "pinData": {},
@@ -199,17 +267,68 @@
           }
         ]
       ]
+    },
+    "Twilio to AZ": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twilio to AB": {
+      "main": [
+        []
+      ]
+    },
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "n8n1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "e5dbc99f-e653-4daf-bded-15f341e6e28c",
+  "versionId": "b3c1789c-12c9-478f-a6c9-3ffe9aee863d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
   },
   "id": "LWQw2HTiJW2qAJ2j",
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-01-26T20:35:21.487Z",
+      "updatedAt": "2025-01-26T20:35:21.487Z",
+      "id": "TutrKQcUpuk3hV3m",
+      "name": "cron"
+    },
+    {
+      "name": "live check",
+      "id": "W9vw21WGksUICmhn",
+      "createdAt": "2025-03-20T18:38:43.077Z",
+      "updatedAt": "2025-03-20T18:38:43.077Z"
+    }
+  ]
 }

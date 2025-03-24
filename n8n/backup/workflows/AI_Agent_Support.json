@@ -254,7 +254,7 @@
             {
               "id": "aae1d6e4-e5d8-4e1b-93a0-e50ff7db51b6",
               "name": "open-ai-max-prompt-tokens",
-              "value": "10216",
+              "value": "16384",
               "type": "string"
             },
             {
@@ -301,7 +301,7 @@
             {
               "id": "24ad05b9-38c7-4e0b-81f3-bc9f3c90afd3",
               "name": "agent-instructions",
-              "value": "={{ \n   $json.body?.client?.groupId === \"qeMtH2cAfhQ4uZmzx\" \n      ? $json[\"myway-support-instructions\"]\n      : $json.body?.client?.groupId === \"fFr6AtmwxYBBtRo7v\"\n      ? $json[\"mileview-support-instructions\"]\n      : $json.body?.client?.groupId === \"mrYcCnXtHyGfGSTeS\"\n      ? $json[\"proalab-support-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"gttte85a6aq9o56\"\n      ? $json[\"myway-info-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"oszy57uvlepslay\"\n      ? $json[\"myway-support-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"7cqyjcptsggtta8\"\n      ? $json[\"mileview-info-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"fcnhbgpe4mdnexm\"\n      ? $json[\"mileview-support-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"gjkcedanwhg6s33\"\n      ? $json[\"proalab-support-instructions\"]\n      : \"Proalab Support\"\n}}\n\nUser Device: {{ $json['user-os'] }}",
+              "value": "={{ \n   $json.body?.client?.groupId === \"qeMtH2cAfhQ4uZmzx\" \n      ? $json[\"myway-support-instructions\"]\n      : $json.body?.client?.groupId === \"fFr6AtmwxYBBtRo7v\"\n      ? $json[\"mileview-support-instructions\"]\n      : $json.body?.client?.groupId === \"mrYcCnXtHyGfGSTeS\"\n      ? $json[\"proalab-support-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"gttte85a6aq9o56\"\n      ? $json[\"myway-info-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"oszy57uvlepslay\"\n      ? $json[\"myway-support-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"7cqyjcptsggtta8\"\n      ? $json[\"mileview-info-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"fcnhbgpe4mdnexm\"\n      ? $json[\"mileview-support-instructions\"]\n      : $json.body?.client?.sourceChannelRef === \"gjkcedanwhg6s33\"\n      ? $json[\"proalab-support-instructions\"]\n      : $json[\"proalab-support-instructions\"]\n}}\n\nUser Device: {{ $json['user-os'] }}",
               "type": "string"
             },
             {
@@ -1469,7 +1469,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "9841bc48-0fdb-495d-9b38-26bcd44af0ef",
+  "versionId": "4bce38f2-dc34-49f7-a276-75fba86b3ea4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
