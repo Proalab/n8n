@@ -1,0 +1,76 @@
+{
+  "name": "Open AI API - Available Models",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4a3c3cec-d44a-47c5-9f77-8939c9efc0d9",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openai.com/v1/models",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "5f895f8a-925d-4121-b9fc-d7d5e7b9082b",
+      "name": "HTTP Request",
+      "credentials": {
+        "openAiApi": {
+          "id": "yLJyJqOUtRWRIiby",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c161fe18-79da-4acd-9eaa-56adf828f3eb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "g1gCN2iEgz8TjYOU",
+  "tags": [
+    {
+      "createdAt": "2025-01-26T09:21:04.473Z",
+      "updatedAt": "2025-01-26T09:21:04.473Z",
+      "id": "VfpwjMdGODJ1skxz",
+      "name": "ai"
+    },
+    {
+      "createdAt": "2025-05-11T07:44:04.615Z",
+      "updatedAt": "2025-05-11T07:44:08.450Z",
+      "id": "aljSly7BEAEhnKde",
+      "name": "manual"
+    }
+  ]
+}
