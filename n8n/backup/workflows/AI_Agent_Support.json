@@ -236,7 +236,7 @@
             {
               "id": "3d612591-bcf8-4863-a161-78cd0fd2b6ff",
               "name": "open-ai-model",
-              "value": "gpt-4o",
+              "value": "gpt-4.1",
               "type": "string"
             },
             {
@@ -1493,7 +1493,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "fa8dc46c-b4aa-4690-a05d-134ec1c64ab6",
+  "versionId": "39c0cada-bcf9-4788-8e0e-b46aae7fc53f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
