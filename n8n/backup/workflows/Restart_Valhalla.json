@@ -1,0 +1,246 @@
+{
+  "name": "Restart Valhalla",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 0,
+              "triggerAtDay": [
+                2,
+                4
+              ],
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        -120
+      ],
+      "id": "3356df0d-4dd3-49d3-9822-ceaa16a84418",
+      "name": "Schedule Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        60
+      ],
+      "id": "b2b65909-d408-4a9f-b5b3-9bc3c2b8db62",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dc6a86b9-6323-41c9-bd8a-d080549170f8",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        -40
+      ],
+      "id": "131b3f4f-64b9-44a0-ad28-7126fc9ea5d9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "docker compose down",
+        "cwd": "/serv/valhalla.docker"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -40
+      ],
+      "id": "80ec0801-521b-4b72-aae4-476a0cfe5c72",
+      "name": "SSH - docker compose down",
+      "retryOnFail": true,
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "8RA88iCYw71yvU2Y",
+          "name": "alexandr.basan SSH (Private Key)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "docker compose up -d",
+        "cwd": "/serv/valhalla.docker"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        20,
+        -40
+      ],
+      "id": "428d6ad5-5fe1-4705-b8cf-a5456b915a56",
+      "name": "SSH - docker compose up -d",
+      "retryOnFail": true,
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "8RA88iCYw71yvU2Y",
+          "name": "alexandr.basan SSH (Private Key)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "privateKey",
+        "command": "docker ps --format \"{{.Names}}\" | grep -q valhalla && echo true || echo false",
+        "cwd": "/serv/valhalla.docker"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        380,
+        -40
+      ],
+      "id": "f9ced2ba-0400-47ed-a4fd-6b3d3e0d7d57",
+      "name": "SSH - check if valhalla is up",
+      "credentials": {
+        "sshPrivateKey": {
+          "id": "8RA88iCYw71yvU2Y",
+          "name": "alexandr.basan SSH (Private Key)"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        -40
+      ],
+      "id": "0089c265-f630-4f59-8a9f-0409f664aaf6",
+      "name": "Wait",
+      "webhookId": "609ceb21-2633-4197-b161-b737c254de1e"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "SSH - docker compose down",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "SSH - docker compose down",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "SSH - docker compose down": {
+      "main": [
+        [
+          {
+            "node": "SSH - docker compose up -d",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SSH - docker compose up -d": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SSH - check if valhalla is up": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SSH - check if valhalla is up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e6ac6180-fdeb-4f56-a295-1ce166e95a20",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "sfKKJzMv5cvobCQx",
+  "tags": [
+    {
+      "createdAt": "2025-05-11T07:44:04.615Z",
+      "updatedAt": "2025-05-11T07:44:08.450Z",
+      "id": "aljSly7BEAEhnKde",
+      "name": "manual"
+    }
+  ]
+}
