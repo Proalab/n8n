@@ -1,0 +1,218 @@
+{
+  "name": "Check if Chatra is overwhelmed",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -160
+      ],
+      "id": "229696be-351d-4c5f-bf6a-38a20a5acde0",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  COUNT(*) AS trigger_count,\n  CASE \n    WHEN COUNT(*) > 5 THEN 'THRESHOLD EXCEEDED' \n    ELSE 'OK' \n  END AS status\nFROM ai_agent_support_conversations\nWHERE createdat >= NOW() - INTERVAL '5 minutes';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -460,
+        -160
+      ],
+      "id": "64f22fe2-a372-49cb-89fc-16e846706ed2",
+      "name": "Postgres",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "2zMAirXyglayHhyb",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3f8c29fb-fec0-460a-bab9-38317f255afc",
+              "leftValue": "={{ $json.trigger_count.toNumber() }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -280,
+        -160
+      ],
+      "id": "f7655db3-5172-4fe3-98f6-61a3b88e3192",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "from": "+12186958003",
+        "to": "+380682550720",
+        "message": "=MyWay Route Planner: Houston, we’ve got a flood of support messages incoming.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ],
+      "id": "4fe1c12c-bde7-4173-bb13-4d45711a7e97",
+      "name": "Twilio to AB",
+      "credentials": {
+        "twilioApi": {
+          "id": "yKX80VmFp1r5WfpL",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "+12186958003",
+        "to": "+48725830581",
+        "message": "=MyWay Route Planner: Houston, we’ve got a flood of support messages incoming.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -480
+      ],
+      "id": "4eadb1a7-5a64-48a6-85d1-38b83450d7a2",
+      "name": "Twilio to AB1",
+      "credentials": {
+        "twilioApi": {
+          "id": "yKX80VmFp1r5WfpL",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -60
+      ],
+      "id": "c59cc05f-5bd0-446d-9046-5d7a39b6576a",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "path": "e8174eae-4ca1-47c4-aac2-e5a4ed1512f8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -320
+      ],
+      "id": "9e08fdca-b336-47b2-89be-2721b347db96",
+      "name": "Webhook",
+      "webhookId": "e8174eae-4ca1-47c4-aac2-e5a4ed1512f8"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Twilio to AB1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twilio to AB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "48e009a3-8718-402c-960d-a5acc77cd611",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "REu4o4y3tx4YEzBy",
+  "tags": [
+    {
+      "createdAt": "2025-01-26T09:21:42.206Z",
+      "updatedAt": "2025-01-26T09:21:42.206Z",
+      "id": "wAuHUcbaDtrFr5wp",
+      "name": "webhook"
+    }
+  ]
+}

@@ -219,3 +219,17 @@ can:
   pro, the community and our team are ready to support with any challenges.
 - **Propose Ideas**: Have an idea for a feature or improvement? Let us know!
   We’re always eager to hear what you’d like to see next.
+
+
+## Access PostgresDB Container
+
+`docker exec -it n8n-postgres-1 /bin/sh`
+then you can do `psql -U root -d automations`
+
+## Access N8N Container
+
+`docker exec -it n8n bash`
+
+## Access Python Scripts Container
+
+`docker exec -it n8n-python-scripts-1 bash`
