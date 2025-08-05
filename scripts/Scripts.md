@@ -7,3 +7,5 @@ then do `docker compose down` and `docker compose up -d` if you want to restart 
 or do `docker compose stop python-scripts` and `docker compose up -d python-scripts`
 
 then you can check updated scripts in container `docker exec -it n8n-python-scripts-1 bash`
+
+n8n can be accessed by `docker exec -it n8n bash`
