@@ -66,7 +66,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        560,
+        780,
         -40
       ],
       "id": "131b3f4f-64b9-44a0-ad28-7126fc9ea5d9",
@@ -81,7 +81,7 @@
       "type": "n8n-nodes-base.ssh",
       "typeVersion": 1,
       "position": [
-        -160,
+        -120,
         -40
       ],
       "id": "80ec0801-521b-4b72-aae4-476a0cfe5c72",
@@ -90,7 +90,7 @@
       "credentials": {
         "sshPrivateKey": {
           "id": "8RA88iCYw71yvU2Y",
-          "name": "alexandr.basan SSH (Private Key)"
+          "name": "proalab_info SSH (Private Key)"
         }
       }
     },
@@ -103,7 +103,7 @@
       "type": "n8n-nodes-base.ssh",
       "typeVersion": 1,
       "position": [
-        20,
+        260,
         -40
       ],
       "id": "428d6ad5-5fe1-4705-b8cf-a5456b915a56",
@@ -125,7 +125,7 @@
       "type": "n8n-nodes-base.ssh",
       "typeVersion": 1,
       "position": [
-        380,
+        600,
         -40
       ],
       "id": "f9ced2ba-0400-47ed-a4fd-6b3d3e0d7d57",
@@ -142,12 +142,45 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        200,
+        420,
         -40
       ],
       "id": "0089c265-f630-4f59-8a9f-0409f664aaf6",
       "name": "Wait",
       "webhookId": "609ceb21-2633-4197-b161-b737c254de1e"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2bba8139-58ee-43e4-b6da-b395b8223e2a",
+              "leftValue": "={{ $json.code }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        -40
+      ],
+      "id": "b806219e-5844-402d-ac92-0d316cbb32f2",
+      "name": "If container did not stop from the first attempt"
     }
   ],
   "pinData": {},
@@ -184,7 +217,7 @@
       "main": [
         [
           {
-            "node": "SSH - docker compose up -d",
+            "node": "If container did not stop from the first attempt",
             "type": "main",
             "index": 0
           }
@@ -223,13 +256,31 @@
           }
         ]
       ]
+    },
+    "If container did not stop from the first attempt": {
+      "main": [
+        [
+          {
+            "node": "SSH - docker compose down",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SSH - docker compose up -d",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "e6ac6180-fdeb-4f56-a295-1ce166e95a20",
+  "versionId": "87b538a2-a557-4af8-9a68-5935e8d032ae",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
