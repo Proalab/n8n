@@ -187,7 +187,7 @@ async def download_file(session, file_url, files_folder, page_url):
     except Exception as e:
         print(f"Error downloading file {file_url}: {e}")
         return None
-# --- END REPLACED ---
+# --- END ---
 
 
 async def crawl_parallel(urls: List[str], subfolder: str, max_concurrent: int = 3, clean: bool = False):
@@ -258,7 +258,7 @@ async def crawl_parallel(urls: List[str], subfolder: str, max_concurrent: int = 
                         markdown_images = re.findall(r"!\[.*?\]\((.*?)\)", markdown_content)
                         image_urls.extend(urljoin(url, img_url) for img_url in markdown_images)
 
-                        # --- FIXED: extract file links by path extension (ignore query) ---
+                        # --- extract file links by path extension (ignore query) ---
                         raw_links = re.findall(r"\[.*?\]\(([^)]+)\)", markdown_content)
                         file_links = []
                         for link in raw_links:
@@ -269,7 +269,7 @@ async def crawl_parallel(urls: List[str], subfolder: str, max_concurrent: int = 
                                 file_links.append(abs_link)
                         if file_links:
                             print(f"Found files in {url}: {file_links}")
-                        # --- END FIXED ---
+                        # --- END ---
 
                         print(f"Extracted image URLs from {url}: {image_urls}")
 
