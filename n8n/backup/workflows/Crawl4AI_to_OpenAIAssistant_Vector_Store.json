@@ -73,21 +73,21 @@
     },
     {
       "parameters": {
-        "fileSelector": "=/data/scripts_output/crawl4ai/{{ $('Set Static Vars1').first().json.subfolder }}/{{ $json.file }}",
+        "fileSelector": "={{ $json.file }}",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        2400,
-        1580
+        1220,
+        1460
       ],
       "id": "6453c82d-a403-47d0-93ba-6cfd3b293245",
       "name": "Read/Write Files from Disk1"
     },
     {
       "parameters": {
-        "command": "=ls /data/scripts_output/crawl4ai/{{ $('Set Static Vars1').first().json.subfolder }}"
+        "command": "=find /data/scripts_output/crawl4ai/{{ $('Set Static Vars1').first().json.subfolder }} -type f \\( -iname \"*.md\" \\)"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -100,13 +100,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Parse the stringified JSON array in $json.stdout\nconst files = $('Check File Names1').first().json.stdout.split('\\n');\n\n// Return each file as a separate item\nreturn files.map(file => ({ file }));"
+        "jsCode": "// Parse the stringified JSON array in $json.stdout\nconst files = $('Check File Names1').first().json.stdout.split('\\n').filter(f => f.trim() !== '');\n\n// Return each file as a separate item\nreturn files.map(file => ({ file }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2200,
-        1580
+        1020,
+        1460
       ],
       "id": "adef326e-0938-45bf-ab50-884247239c93",
       "name": "Build an Array of files1"
@@ -121,8 +121,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        2780,
-        1580
+        1600,
+        1460
       ],
       "id": "4460ae51-b9d9-459c-9d83-f5cbfcabd591",
       "name": "OpenAI - Upload Files1",
@@ -137,96 +137,13 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "5dcbe0b6-c5b5-4918-bbec-43694b4dcb9b",
-              "leftValue": "={{ $json.data }}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        780,
-        1560
-      ],
-      "id": "2028617a-1d3a-42d1-aeff-58a7f5327042",
-      "name": "If3"
-    },
-    {
-      "parameters": {
-        "method": "DELETE",
-        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars1').first().json[\"vector-store-id\"] }}/files/{{ $json.id }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "OpenAI-Beta",
-              "value": "assistants=v2"
-            }
-          ]
-        },
-        "options": {
-          "timeout": 10000
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1640,
-        1420
-      ],
-      "id": "40bf7c05-ae7a-4463-bb14-e645e43d9302",
-      "name": "Delete Vector Store Files1",
-      "retryOnFail": true,
-      "waitBetweenTries": 5000,
-      "credentials": {
-        "openAiApi": {
-          "id": "yLJyJqOUtRWRIiby",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1420,
-        1340
-      ],
-      "id": "3c741eb0-b7d0-42a6-a00f-9dd70186f1c9",
-      "name": "Loop Over Items4"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        3000,
-        1580
+        1820,
+        1460
       ],
       "id": "b9d23710-3d28-489c-ab90-bc2864692ff4",
       "name": "Loop Over Items5"
@@ -256,8 +173,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3220,
-        1700
+        2040,
+        1580
       ],
       "id": "f5e3b512-5391-4be2-a3cb-32218b21308b",
       "name": "Send file to Vector Store1",
@@ -312,26 +229,12 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        2600,
-        1580
+        1420,
+        1460
       ],
       "id": "195ef32d-cd55-41c4-9ef2-9f58083b6517",
       "name": "Wait Temp1",
       "webhookId": "78e88630-6d48-4798-8fe3-7ae8b95a9d5d"
-    },
-    {
-      "parameters": {
-        "amount": 0.5
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        1800,
-        1420
-      ],
-      "id": "9058ec87-592b-4db6-a299-f7d39de96271",
-      "name": "Wait5",
-      "webhookId": "57e3bc0e-2175-4277-bebd-c7936597410b"
     },
     {
       "parameters": {
@@ -340,8 +243,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        3380,
-        1700
+        2200,
+        1580
       ],
       "id": "4bbf118f-c099-4a6f-a49e-39a8ba6eb1ce",
       "name": "Wait7",
@@ -386,8 +289,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        3220,
-        1540
+        2040,
+        1420
       ],
       "id": "924d43d0-09ce-499a-ba89-0cee737a95d7",
       "name": "No Operation, do nothing1"
@@ -464,77 +367,6 @@
     },
     {
       "parameters": {
-        "amount": 2
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        960,
-        1440
-      ],
-      "id": "9469eb4b-d083-4902-b136-88b706ff34ab",
-      "name": "Wait",
-      "webhookId": "80cb6a9f-149f-4b1d-9fb6-28a13c0668cc"
-    },
-    {
-      "parameters": {
-        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars1').first().json[\"vector-store-id\"] }}/files",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "limit",
-              "value": "50"
-            }
-          ]
-        },
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "OpenAI-Beta",
-              "value": "assistants=v2"
-            }
-          ]
-        },
-        "options": {
-          "pagination": {
-            "pagination": {
-              "parameters": {
-                "parameters": [
-                  {
-                    "name": "after",
-                    "value": "={{ $response.body[\"last_id\"] }}"
-                  }
-                ]
-              },
-              "paginationCompleteWhen": "other",
-              "completeExpression": "={{ $response.body[\"has_more\"] == false }}"
-            }
-          }
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        480,
-        1400
-      ],
-      "id": "052ac446-1b12-4be6-9330-12ba8fdbb41b",
-      "name": "Get Vector Store Files - Main",
-      "retryOnFail": true,
-      "waitBetweenTries": 5000,
-      "credentials": {
-        "openAiApi": {
-          "id": "yLJyJqOUtRWRIiby",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "errorMessage": "=Errors:\n{{ $('Execute Crawl4AI Script').item.json.error }}"
       },
       "type": "n8n-nodes-base.stopAndError",
@@ -568,17 +400,43 @@
     },
     {
       "parameters": {
-        "fieldToSplitOut": "data",
+        "workflowId": {
+          "__rl": true,
+          "value": "tusCCGAFPmipt7lB",
+          "mode": "list",
+          "cachedResultName": "Delete Open AI Vector Store Files"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "vector-store-id": "={{ $('Set Static Vars1').first().json[\"vector-store-id\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "vector-store-id",
+              "displayName": "vector-store-id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
         "options": {}
       },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
       "position": [
-        1240,
-        1240
+        660,
+        1400
       ],
-      "id": "c77e81b4-7607-46dc-85fb-17252bd19708",
-      "name": "Split Out"
+      "id": "bd7cfa17-91f4-48f8-b698-2e9440cf9310",
+      "name": "Execute Workflow"
     }
   ],
   "pinData": {},
@@ -598,7 +456,7 @@
       "main": [
         [
           {
-            "node": "Get Vector Store Files - Main",
+            "node": "Execute Workflow",
             "type": "main",
             "index": 0
           }
@@ -621,53 +479,6 @@
         [
           {
             "node": "Loop Over Items5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If3": {
-      "main": [
-        [
-          {
-            "node": "Wait",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Build an Array of files1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Delete Vector Store Files1": {
-      "main": [
-        [
-          {
-            "node": "Wait5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items4": {
-      "main": [
-        [
-          {
-            "node": "Build an Array of files1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Delete Vector Store Files1",
             "type": "main",
             "index": 0
           }
@@ -719,17 +530,6 @@
         [
           {
             "node": "OpenAI - Upload Files1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait5": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items4",
             "type": "main",
             "index": 0
           }
@@ -805,28 +605,6 @@
         ]
       ]
     },
-    "Wait": {
-      "main": [
-        [
-          {
-            "node": "Split Out",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Vector Store Files - Main": {
-      "main": [
-        [
-          {
-            "node": "If3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Execute Crawl4AI Script": {
       "main": [
         [
@@ -838,11 +616,11 @@
         ]
       ]
     },
-    "Split Out": {
+    "Execute Workflow": {
       "main": [
         [
           {
-            "node": "Loop Over Items4",
+            "node": "Build an Array of files1",
             "type": "main",
             "index": 0
           }
@@ -854,7 +632,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "67068624-8fe3-4ac9-8240-0eaa98a776d5",
+  "versionId": "09d91a25-f613-471c-98b7-860f19e58d94",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
@@ -872,6 +650,12 @@
       "updatedAt": "2025-01-26T09:21:04.473Z",
       "id": "VfpwjMdGODJ1skxz",
       "name": "ai"
+    },
+    {
+      "createdAt": "2025-03-20T18:53:47.525Z",
+      "updatedAt": "2025-05-11T07:48:31.085Z",
+      "id": "lZ057yenudLttxwt",
+      "name": "triggered by task"
     }
   ]
 }
