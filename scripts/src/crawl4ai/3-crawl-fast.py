@@ -9,7 +9,7 @@ from typing import List
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse, parse_qs
+from urllib.parse import urljoin, urlparse, parse_qs, unquote  # <- extended import
 import aiofiles
 import argparse
 import shutil  # For folder cleanup
@@ -132,6 +132,64 @@ async def download_image(session, img_url, output_folder, page_url):
         return None
 
 
+# --- smarter file downloader for .xlsx/.xls/.csv (handles query, headers) ---
+async def download_file(session, file_url, files_folder, page_url):
+    try:
+        os.makedirs(files_folder, exist_ok=True)
+
+        parsed = urlparse(file_url)
+        base_name = os.path.basename(parsed.path) or "file"
+        base_name = unquote(base_name)
+
+        # guess extension from path
+        ext = os.path.splitext(base_name)[1].lower()
+
+        async with session.get(file_url) as resp:
+            if resp.status != 200:
+                print(f"Failed to download file {file_url}: HTTP {resp.status}")
+                return None
+
+            # try to get filename from Content-Disposition
+            cd = resp.headers.get("Content-Disposition", "")
+            if "filename" in cd:
+                # Try RFC 5987 filename* first, then regular filename
+                m = re.search(r"filename\*=(?:UTF-8''|utf-8''|)([^;]+)", cd, re.IGNORECASE) \
+                    or re.search(r'filename="?([^";]+)"?', cd)
+                if m:
+                    base_name = unquote(m.group(1).strip())
+                    # Remove leftover utf-8'' prefix if still present
+                    base_name = base_name.lstrip("utf-8''").lstrip("UTF-8''")
+                    ext = os.path.splitext(base_name)[1].lower() or ext
+
+            # if still no extension, infer from content-type
+            if not ext:
+                ct = (resp.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+                if ct == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                    ext = ".xlsx"
+                elif ct in ("application/vnd.ms-excel", "application/octet-stream"):
+                    ext = ".xls"
+                elif ct in ("text/csv", "application/csv"):
+                    ext = ".csv"
+                else:
+                    ext = ".bin"
+
+            # ensure filename has extension
+            if not base_name.lower().endswith(ext):
+                base_name = f"{base_name}{ext}"
+
+            save_path = os.path.join(files_folder, base_name)
+            content = await resp.read()
+
+        async with aiofiles.open(save_path, "wb") as f:
+            await f.write(content)
+        print(f"File saved: {save_path}")
+        return save_path
+    except Exception as e:
+        print(f"Error downloading file {file_url}: {e}")
+        return None
+# --- END REPLACED ---
+
+
 async def crawl_parallel(urls: List[str], subfolder: str, max_concurrent: int = 3, clean: bool = False):
     print("\n=== Parallel Crawling with Image Saving ===")
 
@@ -139,6 +197,8 @@ async def crawl_parallel(urls: List[str], subfolder: str, max_concurrent: int = 
     output_folder = ensure_output_folder(base_folder, subfolder, clean=clean)
     image_folder = os.path.join(output_folder, "images")
     os.makedirs(image_folder, exist_ok=True)
+    files_folder = os.path.join(output_folder, "files")
+    os.makedirs(files_folder, exist_ok=True)
 
     peak_memory = 0
     process = psutil.Process(os.getpid())
@@ -198,11 +258,29 @@ async def crawl_parallel(urls: List[str], subfolder: str, max_concurrent: int = 
                         markdown_images = re.findall(r"!\[.*?\]\((.*?)\)", markdown_content)
                         image_urls.extend(urljoin(url, img_url) for img_url in markdown_images)
 
+                        # --- FIXED: extract file links by path extension (ignore query) ---
+                        raw_links = re.findall(r"\[.*?\]\(([^)]+)\)", markdown_content)
+                        file_links = []
+                        for link in raw_links:
+                            abs_link = urljoin(url, link)
+                            p = urlparse(abs_link)
+                            ext = os.path.splitext(p.path)[1].lower()
+                            if ext in (".xlsx", ".xls", ".csv"):
+                                file_links.append(abs_link)
+                        if file_links:
+                            print(f"Found files in {url}: {file_links}")
+                        # --- END FIXED ---
+
                         print(f"Extracted image URLs from {url}: {image_urls}")
 
                         # Download images
                         for img_url in image_urls:
                             await download_image(session, img_url, image_folder, url)
+
+                        # Download files
+                        for file_url in file_links:
+                            await download_file(session, file_url, files_folder, url)
+
                     else:
                         fail_count += 1
                         print(f"Failed to crawl {url}")
