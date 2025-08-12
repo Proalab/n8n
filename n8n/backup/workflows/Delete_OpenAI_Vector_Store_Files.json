@@ -1,0 +1,268 @@
+{
+  "name": "Delete OpenAI Vector Store Files",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5dcbe0b6-c5b5-4918-bbec-43694b4dcb9b",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -980,
+        40
+      ],
+      "id": "d3a6bc6b-6a2d-4fb4-a5e2-ee21e918b782",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://api.openai.com/v1/vector_stores/{{ $('Set Static Vars1').first().json[\"vector-store-id\"] }}/files/{{ $json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -120,
+        -20
+      ],
+      "id": "ef986602-9e8e-4152-b1aa-981c98155183",
+      "name": "Delete Vector Store Files1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "openAiApi": {
+          "id": "yLJyJqOUtRWRIiby",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -340,
+        -100
+      ],
+      "id": "73afc185-3a80-467a-b22a-0db5593958f0",
+      "name": "Loop Over Items4"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        40,
+        -20
+      ],
+      "id": "1092101c-3b46-4ebb-b0eb-eaf60d7d24a3",
+      "name": "Wait5",
+      "webhookId": "57e3bc0e-2175-4277-bebd-c7936597410b"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -740,
+        -20
+      ],
+      "id": "0dc6f30b-afc9-499a-a07b-de82bf6f38ba",
+      "name": "Wait",
+      "webhookId": "80cb6a9f-149f-4b1d-9fb6-28a13c0668cc"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/vector_stores/{{ $json[\"vector-store-id\"] }}/files",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "options": {
+          "pagination": {
+            "pagination": {
+              "parameters": {
+                "parameters": [
+                  {
+                    "name": "after",
+                    "value": "={{ $response.body[\"last_id\"] }}"
+                  }
+                ]
+              },
+              "paginationCompleteWhen": "other",
+              "completeExpression": "={{ $response.body[\"has_more\"] == false }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1140,
+        40
+      ],
+      "id": "437769e7-b39d-4070-8f6f-2c31700eac33",
+      "name": "Get Vector Store Files - Main",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "openAiApi": {
+          "id": "yLJyJqOUtRWRIiby",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -100
+      ],
+      "id": "2ddaf43c-6037-4494-af26-dbadfef0009d",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1f7bc978-b9a5-4090-9b22-9a5321208976",
+              "name": "vector-store-id",
+              "value": "={{ $json[\"vector-store-id\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1300,
+        40
+      ],
+      "id": "da479a99-4d50-4114-8fec-baecc838b76d",
+      "name": "Set Static Vars1"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "vector-store-id"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1480,
+        40
+      ],
+      "id": "2f5ee0d7-00b6-41b8-bd6c-d0b620741b96",
+      "name": "Workflow Input Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1480,
+        320
+      ],
+      "id": "f5dc6b49-08d1-47dd-8657-7d719c01ec66",
+      "name": "When clicking ‘Test workflow’",
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d4e7cb9e-52fa-4a74-a518-4a0b919180c2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7dea66321b4c2d00f456056dec74111cfa19b98c8cde8bfed7341b9d5147730b"
+  },
+  "id": "tusCCGAFPmipt7lB",
+  "tags": [
+    {
+      "createdAt": "2025-05-11T07:44:04.615Z",
+      "updatedAt": "2025-05-11T07:44:08.450Z",
+      "id": "aljSly7BEAEhnKde",
+      "name": "manual"
+    },
+    {
+      "createdAt": "2025-03-20T18:53:47.525Z",
+      "updatedAt": "2025-05-11T07:48:31.085Z",
+      "id": "lZ057yenudLttxwt",
+      "name": "triggered by task"
+    }
+  ]
+}
