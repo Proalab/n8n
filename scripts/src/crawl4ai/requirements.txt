@@ -1,6 +1,6 @@
-aiohttp
-psutil
-crawl4ai
-beautifulsoup4
+aiohttp==3.12.15
+psutil==7.0.0
+crawl4ai==0.7.2
+beautifulsoup4==4.13.4
 playwright>=1.49.0
 pycountry

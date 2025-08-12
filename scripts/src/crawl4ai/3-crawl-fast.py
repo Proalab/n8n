@@ -180,11 +180,11 @@ async def crawl_parallel(urls: List[str], subfolder: str, max_concurrent: int = 
                         # Save raw markdown
                         raw_filename = os.path.join(output_folder, f"{re.sub(r'^https?://', '', url).replace('/', '_')}.md")
                         with open(raw_filename, "w", encoding="utf-8") as raw_file:
-                            raw_file.write(result.markdown_v2.raw_markdown)
+                            raw_file.write(result.markdown.raw_markdown)
                         print(f"Markdown saved: {raw_filename}")
 
                         # Parse the markdown content
-                        markdown_content = result.markdown_v2.raw_markdown
+                        markdown_content = result.markdown.raw_markdown
                         soup = BeautifulSoup(markdown_content, "html.parser")
 
                         # Extract image URLs from <img> tags
